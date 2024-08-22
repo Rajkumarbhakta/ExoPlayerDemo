@@ -44,7 +44,11 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun searchFolder(it: String):List<Folders> = repository.searchFolder(it)
+     fun searchFolder(it: String) {
+        viewModelScope.launch {
+            repository.searchFolder(it)
+        }
+    }
 
 
 }

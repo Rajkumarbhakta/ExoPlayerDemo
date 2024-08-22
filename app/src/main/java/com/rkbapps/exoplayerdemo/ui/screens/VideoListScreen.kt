@@ -27,8 +27,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -48,6 +52,7 @@ import com.rkbapps.exoplayerdemo.ui.theme.surfaceContainerDark
 import com.rkbapps.exoplayerdemo.util.Constants
 import com.rkbapps.exoplayerdemo.util.getFileIcon
 import com.rkbapps.exoplayerdemo.viewmodels.VideoListViewModel
+import kotlinx.coroutines.launch
 
 class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -56,6 +61,14 @@ class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
 
         val viewModel:VideoListViewModel = hiltViewModel()
         val navigator = LocalNavigator.current
+
+        val videoList = viewModel.videos.collectAsStateWithLifecycle()
+        val scope = rememberCoroutineScope()
+
+        LaunchedEffect(key1 = true){
+            viewModel.emitVideos(videos)
+            viewModel.setVideoList(videos)
+        }
 
         val searchQuery = remember {
             mutableStateOf("")
@@ -84,8 +97,12 @@ class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
                 .padding(horizontal = 16.dp, vertical = 8.dp)) {
                 OutlinedTextField(value = searchQuery.value, onValueChange = {
                     searchQuery.value = it
+                    scope.launch {
+                        viewModel.searchVideos(it)
+                    }
                 },
                     modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(10.dp),
                     trailingIcon = {
                         Icon(imageVector = Icons.Default.Search, contentDescription = "")
                     },
@@ -95,7 +112,7 @@ class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
                 )
                 Spacer(modifier = Modifier.padding(vertical = 10.dp))
                 LazyColumn {
-                    items(items=videos){video->
+                    items(items = videoList.value){video->
                         VideosItem(item = video) {
                             viewModel.savePathInSaveStateHandel(it.path)
                             navigator?.push(OfflineVideoPlayerScreen(it,videos))

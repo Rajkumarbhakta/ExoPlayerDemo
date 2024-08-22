@@ -19,6 +19,8 @@ class HomeRepository @Inject constructor(
     private val _folderList: MutableStateFlow<MediaVideosUiState> = MutableStateFlow(MediaVideosUiState())
     val folderList: StateFlow<MediaVideosUiState> = _folderList
 
+    private var folders:List<Folders> = emptyList()
+
     @SuppressLint("Range", "Recycle")
     suspend fun fetchMediaFolders(){
         _folderList.emit(MediaVideosUiState(isLoading = true))
@@ -61,6 +63,7 @@ class HomeRepository @Inject constructor(
                 }
             }
             Log.d("VIDEOS","$tempList")
+            folders = tempList
             _folderList.emit(MediaVideosUiState(folders = tempList))
         }catch (e:Exception){
             _folderList.emit(MediaVideosUiState(error = e.localizedMessage))
@@ -68,10 +71,13 @@ class HomeRepository @Inject constructor(
         }
     }
 
-    fun searchFolder(query: String):List<Folders> {
-        return _folderList.value.folders.filter { it.name.contains(query,ignoreCase = true) }?: emptyList()
+    suspend fun searchFolder(query: String) {
+        if (query.isEmpty() || query.isBlank()) {
+            _folderList.emit(MediaVideosUiState(folders = folders))
+        }else{
+            _folderList.emit(MediaVideosUiState(folders = folders.filter { it.name.contains(query,ignoreCase = true) }))
+        }
     }
-
 }
 data class MediaVideosUiState(
     val isLoading:Boolean = false,

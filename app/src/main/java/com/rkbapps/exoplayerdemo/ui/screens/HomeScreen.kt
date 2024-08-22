@@ -154,8 +154,10 @@ class HomeScreen :Screen {
 
                     OutlinedTextField(value = searchQuery.value, onValueChange = {
                         searchQuery.value = it
+                        viewModel.searchFolder(it)
                     },
                         modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(10.dp),
                         trailingIcon = {
                             Icon(imageVector = Icons.Default.Search, contentDescription = "")
                         },
