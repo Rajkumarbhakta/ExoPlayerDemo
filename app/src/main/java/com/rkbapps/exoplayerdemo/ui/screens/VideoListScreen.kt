@@ -98,7 +98,7 @@ class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
                     items(items=videos){video->
                         VideosItem(item = video) {
                             viewModel.savePathInSaveStateHandel(it.path)
-                            navigator?.push(OfflineVideoPlayerScreen(it))
+                            navigator?.push(OfflineVideoPlayerScreen(it,videos))
                         }
                     }
                 }

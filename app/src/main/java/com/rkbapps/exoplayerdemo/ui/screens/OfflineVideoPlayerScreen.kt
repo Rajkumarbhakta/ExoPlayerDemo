@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,16 +25,29 @@ import com.rkbapps.exoplayerdemo.ui.composable.VideoPlayer
 import com.rkbapps.exoplayerdemo.ui.theme.surfaceContainerDark
 import com.rkbapps.exoplayerdemo.viewmodels.OfflineVideoPlayerViewModel
 
-class OfflineVideoPlayerScreen(private val video: MediaVideos) : Screen {
+class OfflineVideoPlayerScreen(private val video: MediaVideos,
+                               private val videoList: List<MediaVideos> = emptyList(),
+                               private val index:Int = 0
+) : Screen {
     @OptIn(UnstableApi::class)
     @Composable
     override fun Content() {
         val viewModel: OfflineVideoPlayerViewModel = hiltViewModel()
-
+        val videoTimer = rememberSaveable { viewModel.videoTimer }
 
         LaunchedEffect(Unit) {
-            viewModel.playOfflineVideo(video.path, video.title)
+            if (videoList.isEmpty()){
+                viewModel.playOfflineVideo(video.path, video.title)
+            }else{
+                viewModel.prepareAndPlayPlaylist(videoList,video)
+            }
             viewModel.saveLastPlayedVideo(video)
+        }
+
+        DisposableEffect(Unit) {
+            onDispose {
+                viewModel.savePlaybackState()
+            }
         }
 
         val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -46,6 +61,7 @@ class OfflineVideoPlayerScreen(private val video: MediaVideos) : Screen {
                     .padding(paddingValues),
                 exoPlayer = viewModel.player,
                 videoTittle = video.title,
+                videoTimer
             )
         }
     }

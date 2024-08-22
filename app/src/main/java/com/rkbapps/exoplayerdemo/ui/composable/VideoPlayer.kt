@@ -31,17 +31,14 @@ fun VideoPlayer(
     modifier: Modifier = Modifier,
     exoPlayer: ExoPlayer,
     videoTittle: String,
+    videoTimer: MutableLongState,
 ) {
     val resizeMode = rememberSaveable { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_FIT) }
-
     var shouldShowControls by rememberSaveable { mutableStateOf(false) }
     var isPlaying by rememberSaveable { mutableStateOf(exoPlayer.isPlaying) }
     var playbackState by remember { mutableIntStateOf(exoPlayer.playbackState) }
-    val videoTimer = remember { mutableLongStateOf(0L) }
     val totalDuration = remember { mutableLongStateOf(0L) }
     val bufferedPercentage = remember { mutableIntStateOf(0) }
-
-
 
     //update video timer
     LaunchedEffect(exoPlayer) {

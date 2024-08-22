@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import androidx.annotation.OptIn
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.media3.common.MediaItem
@@ -29,14 +30,26 @@ import javax.inject.Inject
 class OfflineVideoPlayerViewModel  @Inject constructor(
     @ApplicationContext val context: Context,
     val player : ExoPlayer,
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     private val sharedPerfManager: SharedPerfManager,
     private val gson: Gson
 ):ViewModel(){
 
+    companion object {
+        private const val CURRENT_POSITION_KEY = "current_position"
+        private const val CURRENT_VIDEO_INDEX_KEY = "current_video_index"
+    }
+    val videoTimer = mutableLongStateOf(0L)
+
     init {
         player.prepare()
         val path = savedStateHandle.get<String>(Constants.PATH)
+        val currentPosition = savedStateHandle.get<Long>(CURRENT_POSITION_KEY) ?: 0L
+        val currentVideoIndex = savedStateHandle.get<Int>(CURRENT_VIDEO_INDEX_KEY) ?: 0
+
+        if (currentVideoIndex >= 0) {
+            player.seekTo(currentVideoIndex, currentPosition)
+        }
     }
 
     fun playOfflineVideo(path:String,title:String){
@@ -47,11 +60,36 @@ class OfflineVideoPlayerViewModel  @Inject constructor(
     }
 
 
-
-
     fun saveLastPlayedVideo(video:MediaVideos){
         val lastPlayedVideo = gson.toJson(video)
         sharedPerfManager.writeString(Constants.LAST_PLAYED_VIDEO,lastPlayedVideo)
+    }
+
+    fun prepareAndPlayPlaylist(videos: List<MediaVideos>,video: MediaVideos){
+        val startIndex = videos.indexOfFirst { it.path == video.path }
+        if (startIndex == -1) return
+       videos.map {
+            MediaItem.Builder()
+                .setUri(Uri.parse(it.path))
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle(it.title)
+                        .build()
+                )
+                .build()
+        }.also { mediaItems ->
+            player.setMediaItems(mediaItems, startIndex,videoTimer.longValue)
+            player.playWhenReady = true
+        }
+    }
+
+    fun savePlaybackState() {
+        savedStateHandle[CURRENT_POSITION_KEY] = player.currentPosition
+        savedStateHandle[CURRENT_VIDEO_INDEX_KEY] = player.currentMediaItemIndex
+    }
+
+    fun saveCurrentIndex(index:Int){
+        savedStateHandle[CURRENT_VIDEO_INDEX_KEY] = index
     }
 
 
