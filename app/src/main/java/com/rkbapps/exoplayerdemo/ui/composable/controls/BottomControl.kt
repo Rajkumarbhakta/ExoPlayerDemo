@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -54,9 +55,13 @@ import com.rkbapps.exoplayerdemo.util.showSystemBars
 fun BottomControl(
     modifier: Modifier = Modifier,
     bufferPercent: IntState,
+    isPlaying:Boolean=false,
     time: LongState,
     totalTime: Long,
     resizeMode: Int,
+    onPlay:()->Unit={},
+    onPrevious:()->Unit={},
+    onNext:()->Unit={},
     onResizeModeChanged: (Int) -> Unit,
     onSeekChanged: (newValue: Float) -> Unit,
 ) {
@@ -152,27 +157,39 @@ fun BottomControl(
             )
 
             Spacer(modifier = Modifier.width(5.dp))
-
-            IconButton(onClick = {
-                if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                } else {
-                    activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                }
-            }) {
-                Icon(painter =  painterResource(id = orientationIcon.intValue), contentDescription = "minimize/maximize")
-            }
-
         }
 
         Row (
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.Center
         ){
-            Box(modifier = Modifier)
+            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center){
+                Row {
+                    IconButton(onClick = { onPrevious() }) {
+                        Icon(painter = painterResource(id = R.drawable.play_next),
+                            contentDescription = "play previous",
+                            modifier= Modifier.rotate(180f).size(30.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(5.dp))
+                    IconButton(onClick = { onPlay() }) {
+                        Icon(painter = if (isPlaying) painterResource(id = R.drawable.pause) else painterResource(id = R.drawable.play),
+                            contentDescription = "play/pause",
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(5.dp))
+                    IconButton(onClick = { onNext() }) {
+                        Icon(painter = painterResource(id = R.drawable.play_next),
+                            contentDescription = "play next",
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
+                }
+            }
 
-            Box(modifier = Modifier, contentAlignment = Alignment.Center){
+            Row {
                 TextButton(onClick = {
                     if (resizeMode == AspectRatioFrameLayout.RESIZE_MODE_FIT)  {
                         onResizeModeChanged(AspectRatioFrameLayout.RESIZE_MODE_FILL)
@@ -183,13 +200,21 @@ fun BottomControl(
                     if (resizeMode == AspectRatioFrameLayout.RESIZE_MODE_ZOOM) {
                         onResizeModeChanged(AspectRatioFrameLayout.RESIZE_MODE_FIT)
                     }
-
                 }) {
                     Text(text = currentResizeMode.value, style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurface)
                 }
+                Spacer(modifier = Modifier.width(5.dp))
+                IconButton(onClick = {
+                    if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                    } else {
+                        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                    }
+                }) {
+                    Icon(painter =  painterResource(id = R.drawable.orientation_change), contentDescription = "minimize/maximize")
+                }
             }
-
 
         }
     }

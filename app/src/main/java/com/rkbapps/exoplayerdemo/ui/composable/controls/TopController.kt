@@ -16,15 +16,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
 import com.rkbapps.exoplayerdemo.R
 
 @Composable
 fun TopController(modifier: Modifier = Modifier,title:String,) {
+    val navigator = LocalNavigator.current
     Row(modifier = modifier, horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+        IconButton(onClick = {
+            navigator?.let {
+                if (it.canPop){
+                    it.pop()
+                }
+            }
+        }) {
+            Icon(painter = painterResource(id = R.drawable.arrow_left), contentDescription = "go back" )
+        }
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .weight(1f)
+                .padding(16.dp),
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.width(8.dp))

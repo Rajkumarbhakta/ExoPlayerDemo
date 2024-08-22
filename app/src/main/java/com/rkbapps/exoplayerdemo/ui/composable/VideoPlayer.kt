@@ -32,6 +32,8 @@ fun VideoPlayer(
     exoPlayer: ExoPlayer,
     videoTittle: String,
     videoTimer: MutableLongState,
+    onPreviousClicked: () -> Unit = {},
+    onNextClicked: () -> Unit = {}
 ) {
     val resizeMode = rememberSaveable { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_FIT) }
     var shouldShowControls by rememberSaveable { mutableStateOf(false) }
@@ -110,6 +112,7 @@ fun VideoPlayer(
                         )
                     useController = false
                     this.resizeMode = resizeMode.intValue
+                    videoSurfaceView
                 }
             },
             modifier = Modifier
@@ -146,6 +149,8 @@ fun VideoPlayer(
                 }
                 isPlaying = isPlaying.not()
             },
+            onPrevious = { onPreviousClicked() },
+            onNext = { onNextClicked() },
             onFastForward = { exoPlayer.seekForward() },
             playbackState = { playbackState },
             bufferedPercentage = bufferedPercentage,

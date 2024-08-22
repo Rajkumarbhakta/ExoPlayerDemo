@@ -40,6 +40,7 @@ class OfflineVideoPlayerViewModel  @Inject constructor(
         private const val CURRENT_VIDEO_INDEX_KEY = "current_video_index"
     }
     val videoTimer = mutableLongStateOf(0L)
+    private var videos: List<MediaVideos> = emptyList()
 
     init {
         player.prepare()
@@ -68,6 +69,7 @@ class OfflineVideoPlayerViewModel  @Inject constructor(
     fun prepareAndPlayPlaylist(videos: List<MediaVideos>,video: MediaVideos){
         val startIndex = videos.indexOfFirst { it.path == video.path }
         if (startIndex == -1) return
+        this.videos = videos
        videos.map {
             MediaItem.Builder()
                 .setUri(Uri.parse(it.path))
@@ -88,8 +90,21 @@ class OfflineVideoPlayerViewModel  @Inject constructor(
         savedStateHandle[CURRENT_VIDEO_INDEX_KEY] = player.currentMediaItemIndex
     }
 
-    fun saveCurrentIndex(index:Int){
-        savedStateHandle[CURRENT_VIDEO_INDEX_KEY] = index
+
+    fun playNextVideo() {
+        if (player.hasNextMediaItem()) {
+            player.seekToNext()
+        } else {
+            player.seekTo(0, 0L)
+        }
+    }
+
+    fun playPreviousVideo() {
+        if (player.hasPreviousMediaItem()) {
+            player.seekToPrevious()
+        } else {
+            player.seekTo(videos.size - 1, 0L)
+        }
     }
 
 

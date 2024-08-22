@@ -32,13 +32,14 @@ fun PlayerControl(
     videoTimer: LongState,
     totalDuration: Long,
     resizeMode: Int,
+    onPrevious:()->Unit={},
+    onNext:()->Unit={},
     onResizeModeChanged: (Int) -> Unit,
     onSeekChanged: (newValue: Float) -> Unit,
 
 ) {
 
     val context = LocalContext.current
-
 
     val visible = remember(isVisible()) { isVisible() }
     val playing = remember(isPlaying()) { isPlaying() }
@@ -88,8 +89,14 @@ fun PlayerControl(
                     .padding(8.dp),
                 bufferPercent = buffer, time = timer, totalTime = duration,
                 resizeMode=resizeMode,
+                isPlaying = playing,
                 onResizeModeChanged = onResizeModeChanged,
-                onSeekChanged=onSeekChanged)
+                onSeekChanged=onSeekChanged,
+                onPlay =  onPlay,
+                onNext = onNext,
+                onPrevious = onPrevious
+
+            )
         }
     }
 }

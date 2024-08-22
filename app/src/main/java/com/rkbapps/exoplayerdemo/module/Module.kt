@@ -39,7 +39,9 @@ object Module {
             .enableHttpCache(CronetEngine.Builder.HTTP_CACHE_IN_MEMORY, 1024L * 1024L) // 1MiB
             .build()
         val cronetDataSourceFactory = CronetDataSource.Factory(cronetEngine, Executors.newCachedThreadPool())
-        val dataSourceFactory = DefaultDataSource.Factory(context, cronetDataSourceFactory)
+        val dataSourceFactory = DefaultDataSource.
+                Factory(context, cronetDataSourceFactory)
+
 
         return ExoPlayer
             .Builder(context.applicationContext)
@@ -62,6 +64,7 @@ object Module {
                 DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
             )
             .build()
+
     }
 
     @Provides

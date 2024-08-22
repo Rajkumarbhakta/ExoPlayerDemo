@@ -61,7 +61,13 @@ class OfflineVideoPlayerScreen(private val video: MediaVideos,
                     .padding(paddingValues),
                 exoPlayer = viewModel.player,
                 videoTittle = video.title,
-                videoTimer
+                videoTimer = videoTimer,
+                onPreviousClicked = {
+                    viewModel.playPreviousVideo()
+                },
+                onNextClicked = {
+                    viewModel.playNextVideo()
+                }
             )
         }
     }
