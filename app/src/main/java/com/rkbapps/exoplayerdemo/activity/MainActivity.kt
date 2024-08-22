@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         MultiDex.install(this)
         setContent {
             ExoPlayerDemoTheme(
-                dynamicColor = false
+               // dynamicColor = false
             ) {
                 Navigator(screen = HomeScreen()){
                     SlideTransition(navigator = it)

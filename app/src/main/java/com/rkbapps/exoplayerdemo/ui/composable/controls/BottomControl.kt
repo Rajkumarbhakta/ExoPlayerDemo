@@ -172,21 +172,24 @@ fun BottomControl(
                     IconButton(onClick = { onPrevious() }) {
                         Icon(painter = painterResource(id = R.drawable.play_next),
                             contentDescription = "play previous",
-                            modifier= Modifier.rotate(180f).size(30.dp)
+                            modifier= Modifier.rotate(180f).size(30.dp),
+                            tint = Color.White
                         )
                     }
                     Spacer(modifier = Modifier.width(5.dp))
                     IconButton(onClick = { onPlay() }) {
                         Icon(painter = if (isPlaying) painterResource(id = R.drawable.pause) else painterResource(id = R.drawable.play),
                             contentDescription = "play/pause",
-                            modifier = Modifier.size(30.dp)
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.White
                         )
                     }
                     Spacer(modifier = Modifier.width(5.dp))
                     IconButton(onClick = { onNext() }) {
                         Icon(painter = painterResource(id = R.drawable.play_next),
                             contentDescription = "play next",
-                            modifier = Modifier.size(30.dp)
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.White
                         )
                     }
                 }
@@ -215,7 +218,10 @@ fun BottomControl(
                         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                     }
                 }) {
-                    Icon(painter =  painterResource(id = R.drawable.orientation_change), contentDescription = "minimize/maximize")
+                    Icon(painter =  painterResource(id = R.drawable.orientation_change),
+                        contentDescription = "minimize/maximize",
+                        tint = Color.White
+                    )
                 }
             }
 
