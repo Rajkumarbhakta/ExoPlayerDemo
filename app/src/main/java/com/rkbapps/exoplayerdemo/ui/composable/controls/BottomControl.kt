@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -136,7 +137,7 @@ fun BottomControl(
                     valueRange = 0f..100f,
                     colors = SliderDefaults.colors(
                         disabledThumbColor = Color.Transparent,
-                        disabledActiveTrackColor = Color.White
+                        disabledActiveTrackColor = Color.White.copy(alpha = 0.6f),
                     ),
                 )
                 Slider(
@@ -144,10 +145,12 @@ fun BottomControl(
                         onSeekChanged.invoke(it)
                     }, valueRange = 0f..totalTime.toFloat(),
                     colors = SliderDefaults.colors(
-                        thumbColor = MaterialTheme.colorScheme.primary,
-                        activeTrackColor = MaterialTheme.colorScheme.primary,
+                        thumbColor = FloatingActionButtonDefaults.containerColor,
+                        activeTrackColor = FloatingActionButtonDefaults.containerColor,
+                        inactiveTrackColor = Color.Transparent
                     )
                 )
+
             }
             Spacer(modifier = Modifier.width(5.dp))
             Text(
