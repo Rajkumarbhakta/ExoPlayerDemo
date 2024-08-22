@@ -20,6 +20,7 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import cafe.adriel.voyager.core.screen.Screen
 import com.rkbapps.exoplayerdemo.models.MediaVideos
 import com.rkbapps.exoplayerdemo.ui.composable.VideoPlayer
+import com.rkbapps.exoplayerdemo.ui.theme.surfaceContainerDark
 import com.rkbapps.exoplayerdemo.viewmodels.OfflineVideoPlayerViewModel
 
 class OfflineVideoPlayerScreen(private val video: MediaVideos) : Screen {
@@ -31,11 +32,14 @@ class OfflineVideoPlayerScreen(private val video: MediaVideos) : Screen {
 
         LaunchedEffect(Unit) {
             viewModel.playOfflineVideo(video.path, video.title)
+            viewModel.saveLastPlayedVideo(video)
         }
 
         val lifecycle = LocalLifecycleOwner.current.lifecycle
 
-        Scaffold() { paddingValues ->
+        Scaffold(
+            containerColor = surfaceContainerDark
+        ) { paddingValues ->
             VideoPlayer(
                 modifier = Modifier
                     .fillMaxSize()

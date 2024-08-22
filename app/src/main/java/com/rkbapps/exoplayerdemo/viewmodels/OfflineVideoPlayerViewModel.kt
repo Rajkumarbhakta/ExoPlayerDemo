@@ -16,7 +16,10 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.MergingMediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import com.google.gson.Gson
+import com.rkbapps.exoplayerdemo.models.MediaVideos
 import com.rkbapps.exoplayerdemo.util.Constants
+import com.rkbapps.exoplayerdemo.util.SharedPerfManager
 import com.rkbapps.exoplayerdemo.util.findActivity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -27,6 +30,8 @@ class OfflineVideoPlayerViewModel  @Inject constructor(
     @ApplicationContext val context: Context,
     val player : ExoPlayer,
     savedStateHandle: SavedStateHandle,
+    private val sharedPerfManager: SharedPerfManager,
+    private val gson: Gson
 ):ViewModel(){
 
     init {
@@ -39,6 +44,14 @@ class OfflineVideoPlayerViewModel  @Inject constructor(
         val mediaItem = MediaItem.Builder().setUri(uri).setMediaMetadata(MediaMetadata.Builder().setTitle(title).build()).build()
         player.setMediaItem(mediaItem)
         player.playWhenReady = true
+    }
+
+
+
+
+    fun saveLastPlayedVideo(video:MediaVideos){
+        val lastPlayedVideo = gson.toJson(video)
+        sharedPerfManager.writeString(Constants.LAST_PLAYED_VIDEO,lastPlayedVideo)
     }
 
 

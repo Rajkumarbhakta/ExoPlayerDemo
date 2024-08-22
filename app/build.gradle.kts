@@ -65,10 +65,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.media3.datasource.cronet)
-    implementation(libs.cronet.okhttp)
+
     implementation(libs.androidx.lifecycle.runtime.compose.android)
-    implementation(libs.androidx.ui.text.google.fonts)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -83,7 +81,11 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.exoplayer.dash)
     implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.media3.datasource.cronet)
     implementation (libs.exoplayer)
+
+    //okhttp
+    implementation(libs.cronet.okhttp)
 
     //hilt
     implementation(libs.hilt.android)
@@ -109,6 +111,12 @@ dependencies {
 
     //coil
     implementation(libs.coil.compose)
+
+    //gson
+    implementation (libs.gson)
+
+    //google fonts
+    implementation(libs.androidx.ui.text.google.fonts)
 
 
 }

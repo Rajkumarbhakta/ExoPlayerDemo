@@ -1,5 +1,7 @@
 package com.rkbapps.exoplayerdemo.ui.screens
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,7 +44,9 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rkbapps.exoplayerdemo.models.MediaVideos
+import com.rkbapps.exoplayerdemo.ui.theme.surfaceContainerDark
 import com.rkbapps.exoplayerdemo.util.Constants
+import com.rkbapps.exoplayerdemo.util.getFileIcon
 import com.rkbapps.exoplayerdemo.viewmodels.VideoListViewModel
 
 class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
@@ -70,7 +75,7 @@ class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
                         titleContentColor = MaterialTheme.colorScheme.onPrimary
                     )
                 )
-            }
+            },
         ) { paddingValues ->
 
             Column(modifier = Modifier
@@ -105,18 +110,21 @@ class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
     @OptIn(ExperimentalGlideComposeApi::class)
     @Composable
     fun VideosItem(item:MediaVideos,onClick:(item:MediaVideos)->Unit) {
-        ElevatedCard(
-            modifier = Modifier.padding(vertical = 4.dp),
-            onClick = {onClick.invoke(item)}
-        ) {
+//        ElevatedCard(
+//            modifier = Modifier.padding(vertical = 4.dp),
+//            onClick = {onClick.invoke(item)}
+//        ) {
 
             Row (modifier = Modifier
                 .fillMaxWidth()
+                .clickable {
+                    onClick.invoke(item)
+                }
                 .padding(vertical = 8.dp, horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Box(modifier = Modifier
-                    .size(height = 50.dp, width = 70.dp)
+                    .size(height = 80.dp, width = 140.dp)
                     .clip(RoundedCornerShape(8.dp)),){
                     GlideImage(
                         model = item.path,
@@ -127,7 +135,7 @@ class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Column {
-                    Text(text = item.displayName, style = MaterialTheme.typography.titleMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    Text(text = item.displayName, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     Text(text = Constants.convertTime(item.duration), maxLines = 2, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelMedium)
                 }
             }
@@ -135,5 +143,5 @@ class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
         }
 
 
-    }
+//    }
 }

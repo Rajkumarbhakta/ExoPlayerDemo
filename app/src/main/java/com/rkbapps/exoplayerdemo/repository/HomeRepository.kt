@@ -41,15 +41,20 @@ class HomeRepository @Inject constructor(
                         val folderNameIndex = folderPath.lastIndexOf("/")
                         val folderName = folderPath.substring(folderNameIndex+1)
                         val folder = tempList.find { it.name == folderName }
+
+                        val formatIndex = path.lastIndexOf(".")
+                        val format = path.substring(formatIndex+1)
+
+
                         if (folder!=null){
                             folder.files.add(
                                 MediaVideos(id=id,title=title,displayName=displayName,size=size,
-                                duration=duration,path=path,date=date,folderName=folderName)
+                                duration=duration,path=path,date=date,folderName=folderName, format = format)
                             )
                         }else{
                             tempList.add(Folders(name = folderName, files = mutableListOf(
                                 MediaVideos(id=id,title=title,displayName=displayName,size=size,
-                                duration=duration,path=path,date=date,folderName=folderName)
+                                duration=duration,path=path,date=date,folderName=folderName, format = format)
                             )))
                         }
                     }while (cursor.moveToNext())

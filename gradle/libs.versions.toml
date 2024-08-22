@@ -3,7 +3,8 @@ agp = "8.5.2"
 coilCompose = "2.7.0"
 compose = "1.0.0-beta01"
 exoplayer = "2.19.1"
-hiltNavigationCompose = "1.2.0"
+gson = "2.11.0"
+
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -11,19 +12,24 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.9.1"
-composeBom = "2024.06.00"
+composeBom = "2024.08.00"
 media3DatasourceCronet = "1.4.0"
 cronetOkhttp = "0.1.0"
-
+#media3
 media3Exoplayer = "1.4.0"
 media3ExoplayerDash = "1.4.0"
 media3Ui = "1.4.0"
 multidex = "2.0.1"
+#navigation
 navigationCompose = "2.7.7"
 voyager = "1.1.0-beta02"
+hiltNavigationCompose = "1.2.0"
+
 ksp = "1.9.0-1.0.13"
 hilt = "2.51.1"
+
 lifecycleRuntimeComposeAndroid = "2.8.4"
+#google fonts
 uiTextGoogleFonts = "1.6.8"
 
 [libraries]
@@ -70,7 +76,8 @@ voyager-hilt = { module = "cafe.adriel.voyager:voyager-hilt", version.ref = "voy
 androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeComposeAndroid" }
 #google fonts
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
-
+#Gson
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

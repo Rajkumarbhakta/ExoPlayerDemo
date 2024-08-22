@@ -1,4 +1,4 @@
-package com.rkbapps.exoplayerdemo
+package com.rkbapps.exoplayerdemo.module
 
 import android.content.Context
 import androidx.annotation.OptIn
@@ -9,7 +9,8 @@ import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.LoadControl
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import androidx.media3.exoplayer.trackselection.TrackSelection
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.net.cronet.okhttptransport.CronetCallFactory
 import com.rkbapps.exoplayerdemo.util.Constants.PLAYER_SEEK_BACK_INCREMENT
 import com.rkbapps.exoplayerdemo.util.Constants.PLAYER_SEEK_FORWARD_INCREMENT
@@ -31,25 +32,14 @@ object Module {
     @ViewModelScoped
     fun providePlayer(@ApplicationContext context: Context): ExoPlayer {
 
-
         val cronetEngine: CronetEngine = CronetEngine.Builder(context.applicationContext)
             .enableHttp2(true)
             .enableQuic(true)
             .enableBrotli(true)
-            .enableHttpCache(
-                CronetEngine.Builder.HTTP_CACHE_IN_MEMORY,
-                1024L * 1024L) // 1MiB
+            .enableHttpCache(CronetEngine.Builder.HTTP_CACHE_IN_MEMORY, 1024L * 1024L) // 1MiB
             .build()
-
-        val callFactory: CronetCallFactory = CronetCallFactory.newBuilder(cronetEngine).build()
-
-        val cronetDataSourceFactory = CronetDataSource.Factory(
-            cronetEngine,
-            Executors.newCachedThreadPool()
-        )
+        val cronetDataSourceFactory = CronetDataSource.Factory(cronetEngine, Executors.newCachedThreadPool())
         val dataSourceFactory = DefaultDataSource.Factory(context, cronetDataSourceFactory)
-
-
 
         return ExoPlayer
             .Builder(context.applicationContext)
@@ -62,18 +52,22 @@ object Module {
             .build()
     }
 
-    @OptIn(androidx.media3.common.util.UnstableApi::class)
+    @OptIn(UnstableApi::class)
     fun getLoadControl(): LoadControl {
         return DefaultLoadControl.Builder()
             // cache the last three minutes
             .setBackBuffer(1000 * 60 * 3, true)
-            .setBufferDurationsMs(
-                32 * 1024 ,
-                64 * 1024,
+            .setBufferDurationsMs(32 * 1024 , 64 * 1024,
                 DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS,
                 DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
             )
             .build()
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGson(): Gson{
+        return GsonBuilder().create()
     }
 
 
