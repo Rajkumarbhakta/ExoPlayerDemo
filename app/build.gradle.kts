@@ -68,6 +68,7 @@ dependencies {
     implementation(libs.androidx.media3.datasource.cronet)
     implementation(libs.cronet.okhttp)
     implementation(libs.androidx.lifecycle.runtime.compose.android)
+    implementation(libs.androidx.ui.text.google.fonts)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

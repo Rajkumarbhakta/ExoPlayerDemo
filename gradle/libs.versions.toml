@@ -24,6 +24,7 @@ voyager = "1.1.0-beta02"
 ksp = "1.9.0-1.0.13"
 hilt = "2.51.1"
 lifecycleRuntimeComposeAndroid = "2.8.4"
+uiTextGoogleFonts = "1.6.8"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -67,6 +68,8 @@ voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 voyager-hilt = { module = "cafe.adriel.voyager:voyager-hilt", version.ref = "voyager" }
 androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeComposeAndroid" }
+#google fonts
+androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 
 
 [plugins]

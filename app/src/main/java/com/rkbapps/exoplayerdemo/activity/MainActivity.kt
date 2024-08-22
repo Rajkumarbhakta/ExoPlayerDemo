@@ -18,7 +18,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         MultiDex.install(this)
         setContent {
-            ExoPlayerDemoTheme {
+            ExoPlayerDemoTheme(
+                dynamicColor = false
+            ) {
                 Navigator(screen = SplashScreen()){
                     SlideTransition(navigator = it)
                 }
