@@ -61,7 +61,6 @@ class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
 
         val viewModel:VideoListViewModel = hiltViewModel()
         val navigator = LocalNavigator.current
-
         val videoList = viewModel.videos.collectAsStateWithLifecycle()
         val scope = rememberCoroutineScope()
 
