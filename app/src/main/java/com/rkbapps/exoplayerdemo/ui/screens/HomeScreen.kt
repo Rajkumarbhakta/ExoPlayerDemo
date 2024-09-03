@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
@@ -35,17 +36,19 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +56,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -111,6 +116,9 @@ class HomeScreen :Screen {
         val searchQuery = remember {
             mutableStateOf("")
         }
+        val isUrlDialogOpen = remember{
+            mutableStateOf(false)
+        }
 
         Scaffold(
             topBar = {
@@ -125,6 +133,13 @@ class HomeScreen :Screen {
                         ambientColor = Color.Blue,
                         spotColor = Color.Blue
                     ),
+                    actions = {
+                        IconButton(onClick = {
+                            isUrlDialogOpen.value = true
+                        }) {
+                            Icon(painter = painterResource(id = R.drawable.internet), contentDescription = "")
+                        }
+                    }
                 )
             },
             modifier = Modifier.fillMaxSize(),
@@ -143,6 +158,18 @@ class HomeScreen :Screen {
                 }
             }
         ) { innerPadding ->
+            
+            
+            if (isUrlDialogOpen.value){
+                EnterUrlDialog(onDismiss = { isUrlDialogOpen.value = false }) { url->
+                    if (android.util.Patterns.WEB_URL.matcher(url).matches()){
+                        navigator?.push(OnlineVideoPlayerScreen(url))
+                    }else{
+                        Toast.makeText(context, "Invalid Url", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            
             Column (modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -219,7 +246,52 @@ class HomeScreen :Screen {
         }
 
 
-//    }
+    @Composable
+    fun EnterUrlDialog(modifier: Modifier = Modifier,onDismiss:()->Unit,onSubmit:(url:String)->Unit) {
+
+        var url by remember {
+            mutableStateOf("")
+        }
+
+        AlertDialog(
+            modifier = modifier,
+            onDismissRequest = {
+                onDismiss.invoke()
+            },
+            title = {
+                Text(text = "Enter Url")
+            },
+            text = {
+                OutlinedTextField(
+                    value = url,
+                    onValueChange = {
+                        url = it
+                    },
+                    placeholder = {
+                        Text(text = "Enter Url")
+                    },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    onDismiss.invoke()
+                }) {
+                    Text(text = "Cancel")
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    onSubmit.invoke(url)
+                }) {
+                    Text(text = "Play Now")
+                }
+            }
+        )
 
 
+    }
+    
 }
+
