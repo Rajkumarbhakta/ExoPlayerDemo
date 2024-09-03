@@ -147,6 +147,7 @@ class HomeScreen :Screen {
                 FloatingActionButton(onClick = {
                     val video = viewModel.readLastPlayedVideo()
                     if (video != null) {
+                        isUrlDialogOpen.value = false
                         navigator?.push(OfflineVideoPlayerScreen(video))
                     }
                 },

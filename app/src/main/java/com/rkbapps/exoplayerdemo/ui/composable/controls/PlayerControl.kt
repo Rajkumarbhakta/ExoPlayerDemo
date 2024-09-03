@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.media3.ui.AspectRatioFrameLayout
 
 @Composable
 fun PlayerControl(
@@ -32,8 +31,8 @@ fun PlayerControl(
     videoTimer: LongState,
     totalDuration: Long,
     resizeMode: Int,
-    onPrevious:()->Unit={},
-    onNext:()->Unit={},
+    onPrevious:(()->Unit)?={},
+    onNext:(()->Unit)?={},
     onResizeModeChanged: (Int) -> Unit,
     onSeekChanged: (newValue: Float) -> Unit,
 
@@ -82,16 +81,16 @@ fun PlayerControl(
             )
 
             BottomControl(
-                modifier= Modifier
+                modifier = Modifier
                     .background(color = Color.Black.copy(alpha = 0.6f))
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
                     .padding(8.dp),
                 bufferPercent = buffer, time = timer, totalTime = duration,
-                resizeMode=resizeMode,
+                resizeMode =resizeMode,
                 isPlaying = playing,
                 onResizeModeChanged = onResizeModeChanged,
-                onSeekChanged=onSeekChanged,
+                onSeekChanged =onSeekChanged,
                 onPlay =  onPlay,
                 onNext = onNext,
                 onPrevious = onPrevious

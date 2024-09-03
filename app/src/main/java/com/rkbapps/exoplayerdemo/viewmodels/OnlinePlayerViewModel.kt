@@ -3,6 +3,7 @@ package com.rkbapps.exoplayerdemo.viewmodels
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -38,16 +39,16 @@ class OnlinePlayerViewModel @Inject constructor(
         val currentPosition = savedStateHandle.get<Long>(CURRENT_POSITION_KEY) ?: 0L
 
         player.seekTo(currentPosition)
-
     }
 
-    val EXAMPLE_VIDEO_URI = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-
-
     fun playOnlineVideo(url:String,title:String = url){
-        val mediaItem  = MediaItem.fromUri(url)
-        player.setMediaItem(mediaItem)
-        player.playWhenReady = true
+        try {
+            val mediaItem  = MediaItem.fromUri(url)
+            player.setMediaItem(mediaItem)
+            player.playWhenReady = true
+        }catch (e:Exception){
+            Log.d("OnlinePlayerViewModel", "playOnlineVideo: ${e.localizedMessage}")
+        }
     }
 
 

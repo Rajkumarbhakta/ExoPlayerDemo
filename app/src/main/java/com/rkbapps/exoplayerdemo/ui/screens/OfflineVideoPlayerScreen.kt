@@ -1,9 +1,13 @@
 package com.rkbapps.exoplayerdemo.ui.screens
 
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -15,11 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
 import com.rkbapps.exoplayerdemo.models.MediaVideos
 import com.rkbapps.exoplayerdemo.ui.composable.VideoPlayer
 import com.rkbapps.exoplayerdemo.ui.theme.surfaceContainerDark
@@ -29,6 +35,7 @@ class OfflineVideoPlayerScreen(private val video: MediaVideos,
                                private val videoList: List<MediaVideos> = emptyList(),
                                private val index:Int = 0
 ) : Screen {
+
     @OptIn(UnstableApi::class)
     @Composable
     override fun Content() {
@@ -56,19 +63,18 @@ class OfflineVideoPlayerScreen(private val video: MediaVideos,
             containerColor = surfaceContainerDark
         ) { paddingValues ->
             VideoPlayer(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                modifier = Modifier.fillMaxSize().padding(paddingValues),
                 exoPlayer = viewModel.player,
                 videoTittle = video.title,
                 videoTimer = videoTimer,
-                onPreviousClicked = {
-                    viewModel.playPreviousVideo()
-                },
-                onNextClicked = {
-                    viewModel.playNextVideo()
-                }
+                onPreviousClicked = { viewModel.playPreviousVideo() },
+                onNextClicked = { viewModel.playNextVideo() },
             )
         }
     }
+
+
+
+
+
 }

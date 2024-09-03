@@ -2,23 +2,30 @@ package com.rkbapps.exoplayerdemo.ui.composable
 
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import cafe.adriel.voyager.navigator.LocalNavigator
 import com.google.android.exoplayer2.Player.STATE_ENDED
 import com.rkbapps.exoplayerdemo.ui.composable.controls.PlayerControl
 import com.rkbapps.exoplayerdemo.util.Constants
@@ -32,8 +39,8 @@ fun VideoPlayer(
     exoPlayer: ExoPlayer,
     videoTittle: String,
     videoTimer: MutableLongState,
-    onPreviousClicked: () -> Unit = {},
-    onNextClicked: () -> Unit = {}
+    onPreviousClicked: (() -> Unit)? = null,
+    onNextClicked: (() -> Unit)? = null,
 ) {
     val resizeMode = rememberSaveable { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_FIT) }
     var shouldShowControls by rememberSaveable { mutableStateOf(false) }
@@ -41,6 +48,11 @@ fun VideoPlayer(
     var playbackState by remember { mutableIntStateOf(exoPlayer.playbackState) }
     val totalDuration = remember { mutableLongStateOf(0L) }
     val bufferedPercentage = remember { mutableIntStateOf(0) }
+
+    val navigator = LocalNavigator.current
+
+    val error = rememberSaveable { mutableStateOf<String?>(null) }
+    val isErrorDialogVisible = rememberSaveable { mutableStateOf(false) }
 
     //update video timer
     LaunchedEffect(exoPlayer) {
@@ -92,6 +104,18 @@ fun VideoPlayer(
                 bufferedPercentage.intValue = player.bufferedPercentage
                 playbackState = player.playbackState
             }
+
+            override fun onPlayerError(e: PlaybackException) {
+                error.value = e.localizedMessage
+                isErrorDialogVisible.value = true
+                super.onPlayerError(e)
+            }
+
+            override fun onPlayerErrorChanged(e: PlaybackException?) {
+                error.value = e?.localizedMessage
+                isErrorDialogVisible.value = true
+                super.onPlayerErrorChanged(e)
+            }
         }
         exoPlayer.addListener(listener)
         onDispose {
@@ -101,6 +125,24 @@ fun VideoPlayer(
 
 
     Box(modifier = modifier) {
+
+
+
+
+        if (isErrorDialogVisible.value) {
+            ErrorDialog(
+                msg =error.value,
+                onDismiss = { /*TODO*/ }) {
+                isErrorDialogVisible.value = false
+                navigator?.let {
+                    if (navigator.canPop){
+                        navigator.pop()
+                    }
+                }
+            }
+        }
+
+
         AndroidView(
             factory = { ctx ->
                 PlayerView(ctx).apply {
@@ -149,8 +191,8 @@ fun VideoPlayer(
                 }
                 isPlaying = isPlaying.not()
             },
-            onPrevious = { onPreviousClicked() },
-            onNext = { onNextClicked() },
+            onPrevious = onPreviousClicked,
+            onNext = onNextClicked,
             onFastForward = { exoPlayer.seekForward() },
             playbackState = { playbackState },
             bufferedPercentage = bufferedPercentage,
@@ -165,4 +207,19 @@ fun VideoPlayer(
             )
         }
     }
+
+}
+
+
+@Composable
+fun ErrorDialog(modifier: Modifier = Modifier,msg:String?=null,onDismiss:()->Unit,onConfirm:()->Unit) {
+    AlertDialog(
+        modifier = modifier,
+        onDismissRequest = { onDismiss.invoke() },
+        title = { Text(text = "Error") },
+        text = { Text(text = msg?:"Something went wrong") },
+        confirmButton = { TextButton(onClick = { onConfirm.invoke() }) {
+            Text(text = "Ok")
+        }
+        })
 }

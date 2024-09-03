@@ -2,7 +2,6 @@ package com.rkbapps.exoplayerdemo.ui.composable.controls
 
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import android.view.Window
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,7 +21,6 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.IntState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.LongState
@@ -40,9 +37,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import com.rkbapps.exoplayerdemo.R
@@ -61,8 +55,8 @@ fun BottomControl(
     totalTime: Long,
     resizeMode: Int,
     onPlay:()->Unit={},
-    onPrevious:()->Unit={},
-    onNext:()->Unit={},
+    onPrevious: (() -> Unit)? =null,
+    onNext:(()->Unit)?=null,
     onResizeModeChanged: (Int) -> Unit,
     onSeekChanged: (newValue: Float) -> Unit,
 ) {
@@ -169,14 +163,17 @@ fun BottomControl(
         ){
             Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center){
                 Row {
-                    IconButton(onClick = { onPrevious() }) {
-                        Icon(painter = painterResource(id = R.drawable.play_next),
-                            contentDescription = "play previous",
-                            modifier= Modifier.rotate(180f).size(30.dp),
-                            tint = Color.White
-                        )
+                    onPrevious?.let {
+                        IconButton(onClick = { onPrevious() }) {
+                            Icon(painter = painterResource(id = R.drawable.play_next),
+                                contentDescription = "play previous",
+                                modifier= Modifier.rotate(180f).size(30.dp),
+                                tint = Color.White
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(5.dp))
                     }
-                    Spacer(modifier = Modifier.width(5.dp))
+
                     IconButton(onClick = { onPlay() }) {
                         Icon(painter = if (isPlaying) painterResource(id = R.drawable.pause) else painterResource(id = R.drawable.play),
                             contentDescription = "play/pause",
@@ -184,13 +181,15 @@ fun BottomControl(
                             tint = Color.White
                         )
                     }
-                    Spacer(modifier = Modifier.width(5.dp))
-                    IconButton(onClick = { onNext() }) {
-                        Icon(painter = painterResource(id = R.drawable.play_next),
-                            contentDescription = "play next",
-                            modifier = Modifier.size(30.dp),
-                            tint = Color.White
-                        )
+                    onNext?.let {
+                        Spacer(modifier = Modifier.width(5.dp))
+                        IconButton(onClick = { onNext() }) {
+                            Icon(painter = painterResource(id = R.drawable.play_next),
+                                contentDescription = "play next",
+                                modifier = Modifier.size(30.dp),
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
             }

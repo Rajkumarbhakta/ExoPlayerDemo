@@ -43,7 +43,7 @@ fun TopController(modifier: Modifier = Modifier,title:String,) {
                 .weight(1f)
                 .padding(16.dp),
             color = MaterialTheme.colorScheme.onSurface,
-            maxLines = 4
+            maxLines = 3
         )
         Spacer(modifier = Modifier.width(8.dp))
 //        IconButton(onClick = {
