@@ -45,7 +45,7 @@ class OnlinePlayerViewModel @Inject constructor(
 
 
     fun playOnlineVideo(url:String,title:String = url){
-        val mediaItem  = MediaItem.fromUri(EXAMPLE_VIDEO_URI)
+        val mediaItem  = MediaItem.fromUri(url)
         player.setMediaItem(mediaItem)
         player.playWhenReady = true
     }
