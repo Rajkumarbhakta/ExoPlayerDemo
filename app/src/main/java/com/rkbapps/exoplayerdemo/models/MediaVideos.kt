@@ -12,5 +12,6 @@ data class MediaVideos (
     val date:String,
     val folderName:String,
     val format:String,
+    val location:StorageLocation,
 ): Serializable
 

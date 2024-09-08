@@ -29,5 +29,25 @@ object Constants {
         }
     }
 
+    fun formatSize(byteString: String): String {
+        return try {
+            // Convert string to long
+            val bytes = byteString.toLong()
+            val kilobytes = bytes / 1024.0
+            val megabytes = kilobytes / 1024.0
+            val gigabytes = megabytes / 1024.0
+
+            when {
+                gigabytes >= 1 -> String.format(Locale.getDefault(),"%.2f GB", gigabytes)
+                megabytes >= 1 -> String.format(Locale.getDefault(),"%.2f MB", megabytes)
+                kilobytes >= 1 -> String.format(Locale.getDefault(),"%.2f KB", kilobytes)
+                else -> String.format(Locale.getDefault(),"%d Bytes", bytes)
+            }
+        } catch (e: NumberFormatException) {
+            e.printStackTrace()
+            "$byteString Bytes"
+        }
+    }
+
 }
 

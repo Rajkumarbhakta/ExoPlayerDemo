@@ -22,7 +22,7 @@ fun PlayerControl(
     modifier: Modifier = Modifier,
     isVisible:()->Boolean,
     isPlaying: () -> Boolean,
-    getTitle: () -> String,
+    title:  String,
     onRewind:()->Unit,
     onPlay:()->Unit,
     onFastForward:()->Unit,
@@ -47,7 +47,7 @@ fun PlayerControl(
 
     val timer = remember(videoTimer) { videoTimer }
 
-    val title = remember(getTitle()) { getTitle() }
+    val videoTitle = remember(title) { title }
 
     val buffer = remember(bufferedPercentage) { bufferedPercentage }
 
@@ -66,11 +66,8 @@ fun PlayerControl(
         ) {
 
            TopController(
-               modifier = Modifier
-                   .background(color = Color.Black.copy(alpha = 0.6f))
-                   .align(Alignment.TopCenter)
-                   .fillMaxWidth(),
-               title = title
+               modifier = Modifier.background(color = Color.Black.copy(alpha = 0.6f)).align(Alignment.TopCenter).fillMaxWidth(),
+               title = videoTitle
            )
 
             CenterController(modifier = Modifier
@@ -81,11 +78,7 @@ fun PlayerControl(
             )
 
             BottomControl(
-                modifier = Modifier
-                    .background(color = Color.Black.copy(alpha = 0.6f))
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .padding(8.dp),
+                modifier = Modifier.background(color = Color.Black.copy(alpha = 0.6f)).align(Alignment.BottomCenter).fillMaxWidth().padding(8.dp),
                 bufferPercent = buffer, time = timer, totalTime = duration,
                 resizeMode =resizeMode,
                 isPlaying = playing,

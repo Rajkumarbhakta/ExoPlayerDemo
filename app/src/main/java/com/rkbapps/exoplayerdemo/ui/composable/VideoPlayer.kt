@@ -174,7 +174,7 @@ fun VideoPlayer(
             modifier = Modifier.fillMaxSize(),
             isVisible = { shouldShowControls },
             isPlaying = { isPlaying },
-            getTitle = { videoTittle },
+            title =  videoTittle ,
             onRewind = { exoPlayer.seekBack() },
             onPlay = {
                 when {

@@ -65,7 +65,7 @@ class OfflineVideoPlayerScreen(private val video: MediaVideos,
             VideoPlayer(
                 modifier = Modifier.fillMaxSize().padding(paddingValues),
                 exoPlayer = viewModel.player,
-                videoTittle = video.title,
+                videoTittle = "${viewModel.player.currentMediaItem?.mediaMetadata?.title ?: video.title}",
                 videoTimer = videoTimer,
                 onPreviousClicked = { viewModel.playPreviousVideo() },
                 onNextClicked = { viewModel.playNextVideo() },

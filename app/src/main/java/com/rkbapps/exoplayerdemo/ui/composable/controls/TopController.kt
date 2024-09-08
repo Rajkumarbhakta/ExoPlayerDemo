@@ -39,9 +39,7 @@ fun TopController(modifier: Modifier = Modifier,title:String,) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .weight(1f)
-                .padding(16.dp),
+            modifier = Modifier.weight(1f).padding(16.dp),
             color = MaterialTheme.colorScheme.onSurface,
             maxLines = 3
         )

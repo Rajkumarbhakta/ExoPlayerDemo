@@ -109,7 +109,7 @@ dependencies {
     implementation (libs.androidx.navigation.compose)
 
     //glide
-    implementation (libs.compose)
+    implementation (libs.glide.compose)
 
     //coil
     implementation(libs.coil.compose)

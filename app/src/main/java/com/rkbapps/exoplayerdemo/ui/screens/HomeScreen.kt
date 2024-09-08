@@ -8,10 +8,12 @@ import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -96,11 +98,12 @@ class HomeScreen :Screen {
         LaunchedEffect(Unit) {
             if (SDK_INT >= Build.VERSION_CODES.R) {
                 if (!Environment.isExternalStorageManager()) {
-                    val intent: Intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
                     val uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
                     intent.setData(uri)
                     context.startActivity(intent)
                 }
+
             } else {
                 //below android 11=======
                 if (ContextCompat.checkSelfPermission(context,android.Manifest.permission.MANAGE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED){
@@ -112,6 +115,7 @@ class HomeScreen :Screen {
                 }
             }
         }
+
 
         val searchQuery = remember {
             mutableStateOf("")
@@ -199,10 +203,32 @@ class HomeScreen :Screen {
                         }
                     )
                     Spacer(modifier = Modifier.padding(vertical = 10.dp))
-                    LazyColumn (){
-                        items(items = folderList.value.folders){ videos ->
-                            VideoFolderItem(item = videos){
-                                navigator?.push(VideoListScreen(it.files))
+
+                    if(folderList.value.isLoading){
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                            Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                                CircularProgressIndicator()
+                                Text(text = "Please wait...")
+                            }
+                        }
+                    }
+
+                    if(folderList.value.error!=null){
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                            Text(text = folderList.value.error?:"Something went wrong.")
+                        }
+                    }
+
+                    if (folderList.value.folders.isNotEmpty()){
+                        LazyColumn (){
+                            items(items = folderList.value.folders,
+                                key = {
+                                    it.hashCode()
+                                }
+                                ){ videos ->
+                                VideoFolderItem(item = videos){
+                                    navigator?.push(VideoListScreen(it.files))
+                                }
                             }
                         }
                     }
@@ -236,6 +262,11 @@ class HomeScreen :Screen {
                         model = R.drawable.video_folder,
                         contentDescription = "",
                         modifier = Modifier.fillMaxSize(),
+
+                    )
+                    Icon(painter = painterResource(id = R.drawable.sd_card),
+                        contentDescription = "sd card",
+                        modifier = Modifier.size(20.dp).align(Alignment.BottomEnd).padding(end = 2.dp, bottom = 2.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(10.dp))
@@ -265,12 +296,8 @@ class HomeScreen :Screen {
             text = {
                 OutlinedTextField(
                     value = url,
-                    onValueChange = {
-                        url = it
-                    },
-                    placeholder = {
-                        Text(text = "Enter Url")
-                    },
+                    onValueChange = { url = it },
+                    placeholder = { Text(text = "Enter Url") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -278,16 +305,11 @@ class HomeScreen :Screen {
             dismissButton = {
                 TextButton(onClick = {
                     onDismiss.invoke()
-                }) {
-                    Text(text = "Cancel")
-                }
+                }) { Text(text = "Cancel") }
             },
             confirmButton = {
-                TextButton(onClick = {
-                    onSubmit.invoke(url)
-                }) {
-                    Text(text = "Play Now")
-                }
+                TextButton(onClick = { onSubmit.invoke(url)
+                }) { Text(text = "Play Now") }
             }
         )
 
