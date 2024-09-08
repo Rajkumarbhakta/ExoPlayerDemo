@@ -51,6 +51,7 @@ import com.bumptech.glide.integration.compose.Placeholder
 import com.bumptech.glide.integration.compose.placeholder
 import com.rkbapps.exoplayerdemo.R
 import com.rkbapps.exoplayerdemo.models.MediaVideos
+import com.rkbapps.exoplayerdemo.models.StorageLocation
 import com.rkbapps.exoplayerdemo.util.Constants
 import com.rkbapps.exoplayerdemo.viewmodels.VideoListViewModel
 import kotlinx.coroutines.launch
@@ -151,13 +152,15 @@ class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
                         loading = placeholder(R.drawable.video_placeholder),
                         failure = placeholder(R.drawable.video_placeholder)
                     )
-                    Icon(painter = painterResource(id = R.drawable.sd_card),
-                        contentDescription = "sd card",
-                        modifier = Modifier
-                            .size(15.dp)
-                            .align(Alignment.TopEnd)
-                            .padding(top = 2.dp, end = 2.dp)
-                    )
+                   if(item.location!=StorageLocation.INTERNAL){
+                       Icon(painter = painterResource(id = R.drawable.sd_card),
+                           contentDescription = "sd card",
+                           modifier = Modifier
+                               .size(15.dp)
+                               .align(Alignment.TopEnd)
+                               .padding(top = 2.dp, end = 2.dp)
+                       )
+                   }
                     Box(modifier = Modifier
                         .padding(end = 2.dp, bottom = 2.dp)
                         .background(

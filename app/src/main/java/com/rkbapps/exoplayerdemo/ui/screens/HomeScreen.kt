@@ -75,6 +75,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rkbapps.exoplayerdemo.BuildConfig
 import com.rkbapps.exoplayerdemo.R
 import com.rkbapps.exoplayerdemo.models.Folders
+import com.rkbapps.exoplayerdemo.models.StorageLocation
 import com.rkbapps.exoplayerdemo.ui.theme.onPrimaryContainerDark
 import com.rkbapps.exoplayerdemo.ui.theme.primaryContainerDark
 import com.rkbapps.exoplayerdemo.ui.theme.primaryContainerLight
@@ -247,6 +248,9 @@ class HomeScreen :Screen {
 //            onClick = {onClick.invoke(item)},
 //            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
 //        ){
+        val location = remember(item.location) {
+            item.location
+        }
             Row (modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
@@ -264,10 +268,16 @@ class HomeScreen :Screen {
                         modifier = Modifier.fillMaxSize(),
 
                     )
-                    Icon(painter = painterResource(id = R.drawable.sd_card),
-                        contentDescription = "sd card",
-                        modifier = Modifier.size(20.dp).align(Alignment.BottomEnd).padding(end = 2.dp, bottom = 2.dp)
-                    )
+                    if(location!= StorageLocation.INTERNAL) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.sd_card),
+                            contentDescription = "sd card",
+                            modifier = Modifier
+                                .size(20.dp)
+                                .align(Alignment.BottomEnd)
+                                .padding(end = 2.dp, bottom = 2.dp)
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Column {
