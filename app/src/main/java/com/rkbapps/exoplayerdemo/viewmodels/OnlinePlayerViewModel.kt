@@ -2,13 +2,11 @@ package com.rkbapps.exoplayerdemo.viewmodels
 
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.ExoPlayer
 import com.google.gson.Gson
 import com.rkbapps.exoplayerdemo.util.Constants
@@ -21,11 +19,11 @@ import javax.inject.Inject
 @HiltViewModel
 class OnlinePlayerViewModel @Inject constructor(
     @ApplicationContext val context: Context,
-    val player : ExoPlayer,
+    val player: ExoPlayer,
     private val savedStateHandle: SavedStateHandle,
     private val sharedPerfManager: SharedPerfManager,
     private val gson: Gson
-) :ViewModel() {
+) : ViewModel() {
 
     companion object {
         private const val CURRENT_POSITION_KEY = "current_position"
@@ -41,12 +39,12 @@ class OnlinePlayerViewModel @Inject constructor(
         player.seekTo(currentPosition)
     }
 
-    fun playOnlineVideo(url:String,title:String = url){
+    fun playOnlineVideo(url: String, title: String = url) {
         try {
-            val mediaItem  = MediaItem.fromUri(url)
+            val mediaItem = MediaItem.fromUri(url)
             player.setMediaItem(mediaItem)
             player.playWhenReady = true
-        }catch (e:Exception){
+        } catch (e: Exception) {
             Log.d("OnlinePlayerViewModel", "playOnlineVideo: ${e.localizedMessage}")
         }
     }

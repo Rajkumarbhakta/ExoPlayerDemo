@@ -15,7 +15,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import kotlinx.coroutines.delay
 
-class SplashScreen:Screen {
+class SplashScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.current
@@ -23,13 +23,17 @@ class SplashScreen:Screen {
             delay(2000)
             navigator?.replace(HomeScreen())
         }
-       Scaffold {
-           Column(
-               modifier = Modifier.fillMaxSize().padding(it).padding(horizontal = 16.dp),
-               verticalArrangement = Arrangement.Center,
-               horizontalAlignment = Alignment.CenterHorizontally) {
-               Text(text = "Splash Screen")
-           }
-       }
+        Scaffold {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "Splash Screen")
+            }
+        }
     }
 }

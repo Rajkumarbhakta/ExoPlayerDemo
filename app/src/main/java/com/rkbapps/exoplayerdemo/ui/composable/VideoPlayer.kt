@@ -2,7 +2,6 @@ package com.rkbapps.exoplayerdemo.ui.composable
 
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,10 +13,15 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.*
+import androidx.compose.runtime.MutableLongState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -56,9 +60,9 @@ fun VideoPlayer(
 
     //update video timer
     LaunchedEffect(exoPlayer) {
-        if (isActive){
-            while (true){
-                if (exoPlayer.isPlaying){
+        if (isActive) {
+            while (true) {
+                if (exoPlayer.isPlaying) {
                     videoTimer.longValue = exoPlayer.currentPosition
                 }
                 delay(1000)
@@ -68,8 +72,8 @@ fun VideoPlayer(
 
     //update buffer percentage
     LaunchedEffect(exoPlayer) {
-        if (isActive){
-            while (true){
+        if (isActive) {
+            while (true) {
                 bufferedPercentage.intValue = exoPlayer.bufferedPercentage
                 delay(1000)
             }
@@ -79,7 +83,7 @@ fun VideoPlayer(
     //play from the already played position when configuration changes
     LaunchedEffect(Unit) {
         exoPlayer.seekTo(videoTimer.longValue)
-        if (isPlaying){
+        if (isPlaying) {
             exoPlayer.playWhenReady = true
         }
     }
@@ -127,15 +131,13 @@ fun VideoPlayer(
     Box(modifier = modifier) {
 
 
-
-
         if (isErrorDialogVisible.value) {
             ErrorDialog(
-                msg =error.value,
+                msg = error.value,
                 onDismiss = { /*TODO*/ }) {
                 isErrorDialogVisible.value = false
                 navigator?.let {
-                    if (navigator.canPop){
+                    if (navigator.canPop) {
                         navigator.pop()
                     }
                 }
@@ -165,7 +167,7 @@ fun VideoPlayer(
                 ) {
                     shouldShowControls = !shouldShowControls
                 },
-            update = {playerView ->
+            update = { playerView ->
                 playerView.resizeMode = resizeMode.intValue
             }
 
@@ -174,17 +176,19 @@ fun VideoPlayer(
             modifier = Modifier.fillMaxSize(),
             isVisible = { shouldShowControls },
             isPlaying = { isPlaying },
-            title =  videoTittle ,
+            title = videoTittle,
             onRewind = { exoPlayer.seekBack() },
             onPlay = {
                 when {
                     exoPlayer.isPlaying -> {
                         exoPlayer.pause()
                     }
+
                     exoPlayer.isPlaying.not() && playbackState == STATE_ENDED -> {
                         exoPlayer.seekTo(0, 0)
                         exoPlayer.playWhenReady = true
                     }
+
                     else -> {
                         exoPlayer.play()
                     }
@@ -203,7 +207,8 @@ fun VideoPlayer(
                 resizeMode.intValue = it
             }
         ) { position ->
-                exoPlayer.seekTo(position.toLong()
+            exoPlayer.seekTo(
+                position.toLong()
             )
         }
     }
@@ -212,14 +217,20 @@ fun VideoPlayer(
 
 
 @Composable
-fun ErrorDialog(modifier: Modifier = Modifier,msg:String?=null,onDismiss:()->Unit,onConfirm:()->Unit) {
+fun ErrorDialog(
+    modifier: Modifier = Modifier,
+    msg: String? = null,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
     AlertDialog(
         modifier = modifier,
         onDismissRequest = { onDismiss.invoke() },
         title = { Text(text = "Error") },
-        text = { Text(text = msg?:"Something went wrong") },
-        confirmButton = { TextButton(onClick = { onConfirm.invoke() }) {
-            Text(text = "Ok")
-        }
+        text = { Text(text = msg ?: "Something went wrong") },
+        confirmButton = {
+            TextButton(onClick = { onConfirm.invoke() }) {
+                Text(text = "Ok")
+            }
         })
 }

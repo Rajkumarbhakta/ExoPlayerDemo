@@ -16,40 +16,49 @@ import com.rkbapps.exoplayerdemo.R
 
 @Preview
 @Composable
-fun CenterController(modifier: Modifier=Modifier,
-                     isPlaying:Boolean=false,
-                     onFastForward:()->Unit={},
-                     onRewind:()->Unit={},
-                     onPlay:()->Unit={}) {
+fun CenterController(
+    modifier: Modifier = Modifier,
+    isPlaying: Boolean = false,
+    onFastForward: () -> Unit = {},
+    onRewind: () -> Unit = {},
+    onPlay: () -> Unit = {}
+) {
 
-        Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
-            IconButton(onClick = {
-                onRewind()
-            }) {
-                Icon(painter = painterResource(id = R.drawable.rewind),
-                    contentDescription = "rewind",
-                    modifier=Modifier.size(40.dp),
-                    tint = Color.White
-                )
-            }
-            IconButton(onClick = { onPlay() }) {
-                Icon(painter = if (isPlaying) painterResource(id = R.drawable.pause) else painterResource(id = R.drawable.play),
-                    contentDescription = "play",
-                    modifier=Modifier.size(40.dp),
-                    tint = Color.White
-                )
-            }
-
-            IconButton(onClick = { onFastForward() }) {
-                Icon(painter = painterResource(id = R.drawable.fast_foward),
-                    contentDescription = "fast forward",
-                    modifier=Modifier.size(40.dp),
-                    tint = Color.White
-                )
-            }
-
-
-
-
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        IconButton(onClick = {
+            onRewind()
+        }) {
+            Icon(
+                painter = painterResource(id = R.drawable.rewind),
+                contentDescription = "rewind",
+                modifier = Modifier.size(40.dp),
+                tint = Color.White
+            )
         }
+        IconButton(onClick = { onPlay() }) {
+            Icon(
+                painter = if (isPlaying) painterResource(id = R.drawable.pause) else painterResource(
+                    id = R.drawable.play
+                ),
+                contentDescription = "play",
+                modifier = Modifier.size(40.dp),
+                tint = Color.White
+            )
+        }
+
+        IconButton(onClick = { onFastForward() }) {
+            Icon(
+                painter = painterResource(id = R.drawable.fast_foward),
+                contentDescription = "fast forward",
+                modifier = Modifier.size(40.dp),
+                tint = Color.White
+            )
+        }
+
+
+    }
 }

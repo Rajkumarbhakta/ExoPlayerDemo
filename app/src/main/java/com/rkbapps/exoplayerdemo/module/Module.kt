@@ -11,7 +11,6 @@ import androidx.media3.exoplayer.LoadControl
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.google.net.cronet.okhttptransport.CronetCallFactory
 import com.rkbapps.exoplayerdemo.util.Constants.PLAYER_SEEK_BACK_INCREMENT
 import com.rkbapps.exoplayerdemo.util.Constants.PLAYER_SEEK_FORWARD_INCREMENT
 import dagger.Module
@@ -38,9 +37,9 @@ object Module {
             .enableBrotli(true)
             .enableHttpCache(CronetEngine.Builder.HTTP_CACHE_IN_MEMORY, 1024L * 1024L) // 1MiB
             .build()
-        val cronetDataSourceFactory = CronetDataSource.Factory(cronetEngine, Executors.newCachedThreadPool())
-        val dataSourceFactory = DefaultDataSource.
-                Factory(context, cronetDataSourceFactory)
+        val cronetDataSourceFactory =
+            CronetDataSource.Factory(cronetEngine, Executors.newCachedThreadPool())
+        val dataSourceFactory = DefaultDataSource.Factory(context, cronetDataSourceFactory)
 
 
         return ExoPlayer
@@ -59,7 +58,8 @@ object Module {
         return DefaultLoadControl.Builder()
             // cache the last three minutes
             .setBackBuffer(1000 * 60 * 3, true)
-            .setBufferDurationsMs(32 * 1024 , 64 * 1024,
+            .setBufferDurationsMs(
+                32 * 1024, 64 * 1024,
                 DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS,
                 DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
             )
@@ -69,11 +69,9 @@ object Module {
 
     @Provides
     @ViewModelScoped
-    fun provideGson(): Gson{
+    fun provideGson(): Gson {
         return GsonBuilder().create()
     }
-
-
 
 
 }

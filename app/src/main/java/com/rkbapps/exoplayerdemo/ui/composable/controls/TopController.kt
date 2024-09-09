@@ -3,9 +3,7 @@ package com.rkbapps.exoplayerdemo.ui.composable.controls
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,25 +19,32 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import com.rkbapps.exoplayerdemo.R
 
 @Composable
-fun TopController(modifier: Modifier = Modifier,title:String,) {
+fun TopController(modifier: Modifier = Modifier, title: String) {
     val navigator = LocalNavigator.current
-    Row(modifier = modifier, horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         IconButton(onClick = {
             navigator?.let {
-                if (it.canPop){
+                if (it.canPop) {
                     it.pop()
                 }
             }
         }) {
-            Icon(painter = painterResource(id = R.drawable.arrow_left),
-                contentDescription = "go back" ,
+            Icon(
+                painter = painterResource(id = R.drawable.arrow_left),
+                contentDescription = "go back",
                 tint = Color.White
-                )
+            )
         }
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.weight(1f).padding(16.dp),
+            modifier = Modifier
+                .weight(1f)
+                .padding(16.dp),
             color = MaterialTheme.colorScheme.onSurface,
             maxLines = 3
         )

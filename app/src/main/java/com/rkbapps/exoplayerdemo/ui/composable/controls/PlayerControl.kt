@@ -20,23 +20,23 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun PlayerControl(
     modifier: Modifier = Modifier,
-    isVisible:()->Boolean,
+    isVisible: () -> Boolean,
     isPlaying: () -> Boolean,
-    title:  String,
-    onRewind:()->Unit,
-    onPlay:()->Unit,
-    onFastForward:()->Unit,
+    title: String,
+    onRewind: () -> Unit,
+    onPlay: () -> Unit,
+    onFastForward: () -> Unit,
     playbackState: () -> Int,
     bufferedPercentage: IntState,
     videoTimer: LongState,
     totalDuration: Long,
     resizeMode: Int,
-    onPrevious:(()->Unit)?={},
-    onNext:(()->Unit)?={},
+    onPrevious: (() -> Unit)? = {},
+    onNext: (() -> Unit)? = {},
     onResizeModeChanged: (Int) -> Unit,
     onSeekChanged: (newValue: Float) -> Unit,
 
-) {
+    ) {
 
     val context = LocalContext.current
 
@@ -65,26 +65,34 @@ fun PlayerControl(
             contentAlignment = Alignment.Center
         ) {
 
-           TopController(
-               modifier = Modifier.background(color = Color.Black.copy(alpha = 0.6f)).align(Alignment.TopCenter).fillMaxWidth(),
-               title = videoTitle
-           )
+            TopController(
+                modifier = Modifier
+                    .background(color = Color.Black.copy(alpha = 0.6f))
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth(),
+                title = videoTitle
+            )
 
-            CenterController(modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxWidth(),
+            CenterController(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth(),
                 isPlaying = playing,
                 onRewind = onRewind, onPlay = onPlay, onFastForward = onFastForward
             )
 
             BottomControl(
-                modifier = Modifier.background(color = Color.Black.copy(alpha = 0.6f)).align(Alignment.BottomCenter).fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .background(color = Color.Black.copy(alpha = 0.6f))
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 bufferPercent = buffer, time = timer, totalTime = duration,
-                resizeMode =resizeMode,
+                resizeMode = resizeMode,
                 isPlaying = playing,
                 onResizeModeChanged = onResizeModeChanged,
-                onSeekChanged =onSeekChanged,
-                onPlay =  onPlay,
+                onSeekChanged = onSeekChanged,
+                onPlay = onPlay,
                 onNext = onNext,
                 onPrevious = onPrevious
 

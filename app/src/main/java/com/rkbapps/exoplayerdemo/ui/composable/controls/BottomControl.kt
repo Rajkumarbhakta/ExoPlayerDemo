@@ -50,13 +50,13 @@ import com.rkbapps.exoplayerdemo.util.showSystemBars
 fun BottomControl(
     modifier: Modifier = Modifier,
     bufferPercent: IntState,
-    isPlaying:Boolean=false,
+    isPlaying: Boolean = false,
     time: LongState,
     totalTime: Long,
     resizeMode: Int,
-    onPlay:()->Unit={},
-    onPrevious: (() -> Unit)? =null,
-    onNext:(()->Unit)?=null,
+    onPlay: () -> Unit = {},
+    onPrevious: (() -> Unit)? = null,
+    onNext: (() -> Unit)? = null,
     onResizeModeChanged: (Int) -> Unit,
     onSeekChanged: (newValue: Float) -> Unit,
 ) {
@@ -70,7 +70,7 @@ fun BottomControl(
     val orientationIcon = rememberSaveable {
         mutableIntStateOf(R.drawable.maximise)
     }
-    val resizeModes = remember{
+    val resizeModes = remember {
         mutableStateListOf(
             AspectRatioFrameLayout.RESIZE_MODE_FIT,
             AspectRatioFrameLayout.RESIZE_MODE_FILL,
@@ -84,7 +84,7 @@ fun BottomControl(
 
 
     LaunchedEffect(resizeMode) {
-        currentResizeMode.value = when(resizeMode) {
+        currentResizeMode.value = when (resizeMode) {
             AspectRatioFrameLayout.RESIZE_MODE_FIT -> "Fit"
             AspectRatioFrameLayout.RESIZE_MODE_FILL -> "Fill"
             AspectRatioFrameLayout.RESIZE_MODE_ZOOM -> "Zoom"
@@ -156,18 +156,21 @@ fun BottomControl(
             Spacer(modifier = Modifier.width(5.dp))
         }
 
-        Row (
+        Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
-        ){
-            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center){
+        ) {
+            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                 Row {
                     onPrevious?.let {
                         IconButton(onClick = { onPrevious() }) {
-                            Icon(painter = painterResource(id = R.drawable.play_next),
+                            Icon(
+                                painter = painterResource(id = R.drawable.play_next),
                                 contentDescription = "play previous",
-                                modifier= Modifier.rotate(180f).size(30.dp),
+                                modifier = Modifier
+                                    .rotate(180f)
+                                    .size(30.dp),
                                 tint = Color.White
                             )
                         }
@@ -175,7 +178,10 @@ fun BottomControl(
                     }
 
                     IconButton(onClick = { onPlay() }) {
-                        Icon(painter = if (isPlaying) painterResource(id = R.drawable.pause) else painterResource(id = R.drawable.play),
+                        Icon(
+                            painter = if (isPlaying) painterResource(id = R.drawable.pause) else painterResource(
+                                id = R.drawable.play
+                            ),
                             contentDescription = "play/pause",
                             modifier = Modifier.size(30.dp),
                             tint = Color.White
@@ -184,7 +190,8 @@ fun BottomControl(
                     onNext?.let {
                         Spacer(modifier = Modifier.width(5.dp))
                         IconButton(onClick = { onNext() }) {
-                            Icon(painter = painterResource(id = R.drawable.play_next),
+                            Icon(
+                                painter = painterResource(id = R.drawable.play_next),
                                 contentDescription = "play next",
                                 modifier = Modifier.size(30.dp),
                                 tint = Color.White
@@ -196,7 +203,7 @@ fun BottomControl(
 
             Row {
                 TextButton(onClick = {
-                    if (resizeMode == AspectRatioFrameLayout.RESIZE_MODE_FIT)  {
+                    if (resizeMode == AspectRatioFrameLayout.RESIZE_MODE_FIT) {
                         onResizeModeChanged(AspectRatioFrameLayout.RESIZE_MODE_FILL)
                     }
                     if (resizeMode == AspectRatioFrameLayout.RESIZE_MODE_FILL) {
@@ -206,8 +213,11 @@ fun BottomControl(
                         onResizeModeChanged(AspectRatioFrameLayout.RESIZE_MODE_FIT)
                     }
                 }) {
-                    Text(text = currentResizeMode.value, style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurface)
+                    Text(
+                        text = currentResizeMode.value,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
                 Spacer(modifier = Modifier.width(5.dp))
                 IconButton(onClick = {
@@ -217,7 +227,8 @@ fun BottomControl(
                         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                     }
                 }) {
-                    Icon(painter =  painterResource(id = R.drawable.orientation_change),
+                    Icon(
+                        painter = painterResource(id = R.drawable.orientation_change),
                         contentDescription = "minimize/maximize",
                         tint = Color.White
                     )
@@ -226,7 +237,6 @@ fun BottomControl(
 
         }
     }
-
 
 
 }

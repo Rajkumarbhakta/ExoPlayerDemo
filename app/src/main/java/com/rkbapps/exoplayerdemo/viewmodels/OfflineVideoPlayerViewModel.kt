@@ -3,20 +3,12 @@ package com.rkbapps.exoplayerdemo.viewmodels
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.net.Uri
-import androidx.annotation.OptIn
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaItem.fromUri
 import androidx.media3.common.MediaMetadata
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.DataSource
-import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.MediaSource
-import androidx.media3.exoplayer.source.MergingMediaSource
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import com.google.gson.Gson
 import com.rkbapps.exoplayerdemo.models.MediaVideos
 import com.rkbapps.exoplayerdemo.util.Constants
@@ -27,18 +19,19 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 @HiltViewModel
-class OfflineVideoPlayerViewModel  @Inject constructor(
+class OfflineVideoPlayerViewModel @Inject constructor(
     @ApplicationContext val context: Context,
-    val player : ExoPlayer,
+    val player: ExoPlayer,
     private val savedStateHandle: SavedStateHandle,
     private val sharedPerfManager: SharedPerfManager,
     private val gson: Gson
-):ViewModel(){
+) : ViewModel() {
 
     companion object {
         private const val CURRENT_POSITION_KEY = "current_position"
         private const val CURRENT_VIDEO_INDEX_KEY = "current_video_index"
     }
+
     val videoTimer = mutableLongStateOf(0L)
     private var videos: List<MediaVideos> = emptyList()
 
@@ -53,24 +46,25 @@ class OfflineVideoPlayerViewModel  @Inject constructor(
         }
     }
 
-    fun playOfflineVideo(path:String,title:String){
+    fun playOfflineVideo(path: String, title: String) {
         val uri = Uri.parse(path)
-        val mediaItem = MediaItem.Builder().setUri(uri).setMediaMetadata(MediaMetadata.Builder().setTitle(title).build()).build()
+        val mediaItem = MediaItem.Builder().setUri(uri)
+            .setMediaMetadata(MediaMetadata.Builder().setTitle(title).build()).build()
         player.setMediaItem(mediaItem)
         player.playWhenReady = true
     }
 
 
-    fun saveLastPlayedVideo(video:MediaVideos){
+    fun saveLastPlayedVideo(video: MediaVideos) {
         val lastPlayedVideo = gson.toJson(video)
-        sharedPerfManager.writeString(Constants.LAST_PLAYED_VIDEO,lastPlayedVideo)
+        sharedPerfManager.writeString(Constants.LAST_PLAYED_VIDEO, lastPlayedVideo)
     }
 
-    fun prepareAndPlayPlaylist(videos: List<MediaVideos>,video: MediaVideos){
+    fun prepareAndPlayPlaylist(videos: List<MediaVideos>, video: MediaVideos) {
         val startIndex = videos.indexOfFirst { it.path == video.path }
         if (startIndex == -1) return
         this.videos = videos
-       videos.map {
+        videos.map {
             MediaItem.Builder()
                 .setUri(Uri.parse(it.path))
                 .setMediaMetadata(
@@ -80,7 +74,7 @@ class OfflineVideoPlayerViewModel  @Inject constructor(
                 )
                 .build()
         }.also { mediaItems ->
-            player.setMediaItems(mediaItems, startIndex,videoTimer.longValue)
+            player.setMediaItems(mediaItems, startIndex, videoTimer.longValue)
             player.playWhenReady = true
         }
     }
@@ -106,8 +100,6 @@ class OfflineVideoPlayerViewModel  @Inject constructor(
             player.seekTo(videos.size - 1, 0L)
         }
     }
-
-
 
 
     override fun onCleared() {

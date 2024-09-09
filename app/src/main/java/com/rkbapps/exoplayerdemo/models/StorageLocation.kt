@@ -1,6 +1,6 @@
 package com.rkbapps.exoplayerdemo.models
 
-enum class StorageLocation{
+enum class StorageLocation {
     INTERNAL,
     EXTERNAL
 }

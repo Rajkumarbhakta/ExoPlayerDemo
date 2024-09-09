@@ -49,14 +49,14 @@ fun showSystemBars(window: Window) {
 
 fun getFileIcon(format: String): Int {
     if (format.contains("mp4", ignoreCase = true)) return R.drawable.mp4
-    if(format.contains("avi", ignoreCase = true)) return R.drawable.avi
-    if(format.contains("mkv", ignoreCase = true)) return R.drawable.mkv
-    if(format.contains("mov", ignoreCase = true)) return R.drawable.mov
-    if(format.contains("f4v", ignoreCase = true)) return R.drawable.f4v
-    if(format.contains("flv", ignoreCase = true)) return R.drawable.flv
-    if(format.contains("wmv", ignoreCase = true)) return R.drawable.wmv
-    if(format.contains("swf", ignoreCase = true)) return R.drawable.swf
-    if(format.contains("3gp", ignoreCase = true)) return R.drawable.three_gp
+    if (format.contains("avi", ignoreCase = true)) return R.drawable.avi
+    if (format.contains("mkv", ignoreCase = true)) return R.drawable.mkv
+    if (format.contains("mov", ignoreCase = true)) return R.drawable.mov
+    if (format.contains("f4v", ignoreCase = true)) return R.drawable.f4v
+    if (format.contains("flv", ignoreCase = true)) return R.drawable.flv
+    if (format.contains("wmv", ignoreCase = true)) return R.drawable.wmv
+    if (format.contains("swf", ignoreCase = true)) return R.drawable.swf
+    if (format.contains("3gp", ignoreCase = true)) return R.drawable.three_gp
     return R.drawable.video
 }
 

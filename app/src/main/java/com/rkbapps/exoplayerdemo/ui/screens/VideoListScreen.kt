@@ -47,7 +47,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.compose.Placeholder
 import com.bumptech.glide.integration.compose.placeholder
 import com.rkbapps.exoplayerdemo.R
 import com.rkbapps.exoplayerdemo.models.MediaVideos
@@ -56,17 +55,17 @@ import com.rkbapps.exoplayerdemo.util.Constants
 import com.rkbapps.exoplayerdemo.viewmodels.VideoListViewModel
 import kotlinx.coroutines.launch
 
-class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
+class VideoListScreen(private val videos: List<MediaVideos>) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
 
-        val viewModel:VideoListViewModel = hiltViewModel()
+        val viewModel: VideoListViewModel = hiltViewModel()
         val navigator = LocalNavigator.current
         val videoList = viewModel.videos.collectAsStateWithLifecycle()
         val scope = rememberCoroutineScope()
 
-        LaunchedEffect(key1 = true){
+        LaunchedEffect(key1 = true) {
             viewModel.emitVideos(videos)
             viewModel.setVideoList(videos)
         }
@@ -92,10 +91,12 @@ class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
             },
         ) { paddingValues ->
 
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp, vertical = 8.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
                 OutlinedTextField(value = searchQuery.value, onValueChange = {
                     searchQuery.value = it
                     scope.launch {
@@ -115,10 +116,10 @@ class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
                 LazyColumn {
                     items(items = videoList.value, key = {
                         it.id
-                    }){video->
+                    }) { video ->
                         VideosItem(item = video) {
                             viewModel.savePathInSaveStateHandel(it.path)
-                            navigator?.push(OfflineVideoPlayerScreen(it,videos))
+                            navigator?.push(OfflineVideoPlayerScreen(it, videos))
                         }
                     }
                 }
@@ -129,60 +130,77 @@ class VideoListScreen(private val videos:List<MediaVideos>) : Screen {
 
     @OptIn(ExperimentalGlideComposeApi::class)
     @Composable
-    fun VideosItem(item:MediaVideos,onClick:(item:MediaVideos)->Unit) {
+    fun VideosItem(item: MediaVideos, onClick: (item: MediaVideos) -> Unit) {
 //        ElevatedCard(
 //            modifier = Modifier.padding(vertical = 4.dp),
 //            onClick = {onClick.invoke(item)}
 //        ) {
 
-            Row (modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    onClick.invoke(item)
-                }
-                .padding(vertical = 8.dp, horizontal = 10.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Box(modifier = Modifier
+        val location = remember(item.location) { item.location }
+        val duration = remember(item.duration){ Constants.convertTime(item.duration) }
+        val fileSize = remember(item.size) { Constants.formatSize(item.size) }
+
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick.invoke(item)
+            }
+            .padding(vertical = 8.dp, horizontal = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
                     .size(height = 80.dp, width = 140.dp)
-                    .clip(RoundedCornerShape(8.dp)),){
-                    GlideImage(
-                        model = item.path, contentDescription = "", modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                        loading = placeholder(R.drawable.video_placeholder),
-                        failure = placeholder(R.drawable.video_placeholder)
+                    .clip(RoundedCornerShape(8.dp)),
+            ) {
+                GlideImage(
+                    model = item.path, contentDescription = "", modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop,
+                    loading = placeholder(R.drawable.video_placeholder),
+                    failure = placeholder(R.drawable.video_placeholder)
+                )
+                if (location != StorageLocation.INTERNAL) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.sd_card),
+                        contentDescription = "sd card",
+                        modifier = Modifier.size(15.dp).align(Alignment.TopEnd).padding(top = 2.dp, end = 2.dp)
                     )
-                   if(item.location!=StorageLocation.INTERNAL){
-                       Icon(painter = painterResource(id = R.drawable.sd_card),
-                           contentDescription = "sd card",
-                           modifier = Modifier
-                               .size(15.dp)
-                               .align(Alignment.TopEnd)
-                               .padding(top = 2.dp, end = 2.dp)
-                       )
-                   }
-                    Box(modifier = Modifier
-                        .padding(end = 2.dp, bottom = 2.dp)
-                        .background(
-                            color = Color.Black.copy(alpha = 0.7f),
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(horizontal = 4.dp, vertical = 2.dp)
-                        .align(Alignment.BottomEnd)
-                        , contentAlignment = Alignment.Center
-                    ){
-                        Text(text = Constants.convertTime(item.duration), maxLines = 2, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelMedium)
-                    }
                 }
-                Spacer(modifier = Modifier.width(10.dp))
-                Column {
-                    Text(text = item.displayName, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Text(text = Constants.formatSize(item.size), maxLines = 2, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelMedium)
+                Box(
+                    modifier = Modifier
+                        .padding(end = 2.dp, bottom = 2.dp)
+                        .background(color = Color.Black.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))
+                        .padding(horizontal = 4.dp, vertical = 2.dp)
+                        .align(Alignment.BottomEnd), contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = duration,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color.White
+                    )
                 }
             }
-
+            Spacer(modifier = Modifier.width(10.dp))
+            Column {
+                Text(
+                    text = item.displayName,
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+                Text(
+                    text = fileSize,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.labelMedium
+                )
+            }
         }
+
+    }
 
 
 //    }

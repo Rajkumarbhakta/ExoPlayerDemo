@@ -8,7 +8,6 @@ import androidx.multidex.MultiDex
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import com.rkbapps.exoplayerdemo.ui.screens.HomeScreen
-import com.rkbapps.exoplayerdemo.ui.screens.SplashScreen
 import com.rkbapps.exoplayerdemo.ui.theme.ExoPlayerDemoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,10 +18,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         MultiDex.install(this)
         setContent {
-            ExoPlayerDemoTheme(
-               // dynamicColor = false
-            ) {
-                Navigator(screen = HomeScreen()){
+            ExoPlayerDemoTheme {
+                Navigator(screen = HomeScreen()) {
                     SlideTransition(navigator = it)
                 }
 

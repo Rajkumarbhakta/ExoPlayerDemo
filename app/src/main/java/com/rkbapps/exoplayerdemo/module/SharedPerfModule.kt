@@ -17,8 +17,9 @@ object SharedPerfModule {
     @Provides
     @Singleton
     fun provideSharedPref(@ApplicationContext context: Context): SharedPreferences {
-        val sharedPref = context.getSharedPreferences(BuildConfig.APPLICATION_ID, Context.MODE_PRIVATE)
-        return  sharedPref
+        val sharedPref =
+            context.getSharedPreferences(BuildConfig.APPLICATION_ID, Context.MODE_PRIVATE)
+        return sharedPref
     }
 
 }
