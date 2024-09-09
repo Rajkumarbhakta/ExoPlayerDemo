@@ -86,6 +86,7 @@ class HomeScreen : Screen {
             rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) {
                 if (it) {
                     Toast.makeText(context, "Permission granted.", Toast.LENGTH_SHORT).show()
+                    viewModel.fetchVideos()
                 }
             }
 
@@ -98,12 +99,12 @@ class HomeScreen : Screen {
                     context.startActivity(intent)
                 }
             } else {
-                if (ContextCompat.checkSelfPermission(context,
+                /*if (ContextCompat.checkSelfPermission(context,
                         android.Manifest.permission.READ_EXTERNAL_STORAGE
                     ) == PackageManager.PERMISSION_GRANTED
                 ) {
-                    viewModel.fetchVideos()
-                } else if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    permissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                } else */if (ActivityCompat.shouldShowRequestPermissionRationale(
                         context as Activity,
                         android.Manifest.permission.READ_EXTERNAL_STORAGE
                     )
