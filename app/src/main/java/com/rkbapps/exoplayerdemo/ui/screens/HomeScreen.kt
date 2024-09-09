@@ -97,28 +97,22 @@ class HomeScreen : Screen {
                     intent.setData(uri)
                     context.startActivity(intent)
                 }
-
             } else {
-                if (ContextCompat.checkSelfPermission(
-                        context,
-                        android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                if (ContextCompat.checkSelfPermission(context,
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE
                     ) == PackageManager.PERMISSION_GRANTED
                 ) {
-
+                    viewModel.fetchVideos()
                 } else if (ActivityCompat.shouldShowRequestPermissionRationale(
                         context as Activity,
-                        android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE
                     )
                 ) {
-
+                    permissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
                 } else {
-                    permissionLauncher.launch(android.Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+                    permissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
                 }
             }
-        }
-
-        LaunchedEffect(folderList.value) {
-            Log.d("FOLDERLIST","${folderList.value}");
         }
 
 

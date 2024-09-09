@@ -30,6 +30,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun fetchVideos(){
+        viewModelScope.launch {
+            repository.fetchMediaFolders()
+        }
+    }
+
     fun readLastPlayedVideo(): MediaVideos? {
         return try {
             val data = sharedPerfManager.readString(Constants.LAST_PLAYED_VIDEO)
