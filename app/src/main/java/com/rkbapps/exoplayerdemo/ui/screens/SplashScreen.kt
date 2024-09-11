@@ -11,29 +11,32 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
+import androidx.navigation.NavHostController
+import com.rkbapps.exoplayerdemo.navigation.Home
 import kotlinx.coroutines.delay
 
-class SplashScreen : Screen {
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.current
-        LaunchedEffect(Unit) {
-            delay(2000)
-            navigator?.replace(HomeScreen())
-        }
-        Scaffold {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "Splash Screen")
-            }
+@Composable
+fun SplashScreen(navController: NavHostController) {
+    LaunchedEffect(Unit) {
+        delay(2000)
+        navController.navigate(route = Home)
+    }
+    Scaffold {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "Splash Screen")
         }
     }
 }
+
+
+
+
+
+

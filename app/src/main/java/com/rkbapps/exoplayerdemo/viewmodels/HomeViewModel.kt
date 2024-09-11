@@ -17,7 +17,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val repository: HomeRepository,
     private val sharedPerfManager: SharedPerfManager,
-    private val gson: Gson
+    val gson: Gson
 ) : ViewModel() {
 
 

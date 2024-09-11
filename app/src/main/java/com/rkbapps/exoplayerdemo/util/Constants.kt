@@ -1,6 +1,7 @@
 package com.rkbapps.exoplayerdemo.util
 
 import java.util.Locale
+import java.util.UUID
 
 object Constants {
     const val PATH = "path"
@@ -47,6 +48,10 @@ object Constants {
             e.printStackTrace()
             "$byteString Bytes"
         }
+    }
+
+    fun generateUniqueKey(): String {
+        return UUID.randomUUID().toString()
     }
 
 }

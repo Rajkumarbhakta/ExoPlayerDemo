@@ -51,8 +51,7 @@ class HomeRepository @Inject constructor(
             val sortOrder = "${MediaStore.Video.Media.DISPLAY_NAME} ASC"
 
             val selection = "${MediaStore.Video.Media.DURATION} >= ?"
-            val selectionArgs =
-                arrayOf(TimeUnit.MILLISECONDS.convert(10, TimeUnit.SECONDS).toString())
+            val selectionArgs = arrayOf(TimeUnit.MILLISECONDS.convert(10, TimeUnit.SECONDS).toString())
 
             val cursor =
                 context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
@@ -77,13 +76,14 @@ class HomeRepository @Inject constructor(
                         val folderPath = path.substring(0, index)
                         val folderNameIndex = folderPath.lastIndexOf("/")
                         val folderName = folderPath.substring(folderNameIndex + 1)
-                        val folder = tempList.find { it.name == folderName }
+                        val location = if (isInternalStorage(path)) StorageLocation.INTERNAL else StorageLocation.EXTERNAL
+
 
                         val formatIndex = path.lastIndexOf(".")
                         val format = path.substring(formatIndex + 1)
 
-                        val location =
-                            if (isInternalStorage(path)) StorageLocation.INTERNAL else StorageLocation.EXTERNAL
+                        val folder = tempList.find { it.name == folderName && it.location == location }
+
 
                         Log.d("VIDEOS", "Folder Name : $folderName")
                         if (folder != null) {

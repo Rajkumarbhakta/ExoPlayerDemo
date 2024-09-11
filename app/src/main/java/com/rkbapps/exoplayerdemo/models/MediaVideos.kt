@@ -2,6 +2,7 @@ package com.rkbapps.exoplayerdemo.models
 
 import java.io.Serializable
 
+@kotlinx.serialization.Serializable
 data class MediaVideos(
     val id: String,
     val title: String,
@@ -12,6 +13,6 @@ data class MediaVideos(
     val date: String,
     val folderName: String,
     val format: String,
-    val location: StorageLocation,
+    val location: String,
 ) : Serializable
 

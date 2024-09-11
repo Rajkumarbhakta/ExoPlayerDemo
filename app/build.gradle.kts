@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.hilt.android)
+    id ("kotlinx-serialization")
 }
 
 android {
@@ -117,6 +118,9 @@ dependencies {
 
     //google fonts
     implementation(libs.androidx.ui.text.google.fonts)
+
+    //kotlinx serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1")
 
 
 }

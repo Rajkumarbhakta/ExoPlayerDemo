@@ -2,6 +2,7 @@ package com.rkbapps.exoplayerdemo.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.google.gson.Gson
 import com.rkbapps.exoplayerdemo.models.MediaVideos
 import com.rkbapps.exoplayerdemo.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,6 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class VideoListViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
+    val gson: Gson
 ) : ViewModel() {
 
     private val _videos = MutableStateFlow<List<MediaVideos>>(emptyList())

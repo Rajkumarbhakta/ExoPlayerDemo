@@ -24,7 +24,7 @@ class OfflineVideoPlayerViewModel @Inject constructor(
     val player: ExoPlayer,
     private val savedStateHandle: SavedStateHandle,
     private val sharedPerfManager: SharedPerfManager,
-    private val gson: Gson
+    val gson: Gson
 ) : ViewModel() {
 
     companion object {

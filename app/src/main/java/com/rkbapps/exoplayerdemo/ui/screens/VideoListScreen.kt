@@ -43,165 +43,175 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
+import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.rkbapps.exoplayerdemo.R
 import com.rkbapps.exoplayerdemo.models.MediaVideos
 import com.rkbapps.exoplayerdemo.models.StorageLocation
+import com.rkbapps.exoplayerdemo.navigation.VideoListing
 import com.rkbapps.exoplayerdemo.util.Constants
 import com.rkbapps.exoplayerdemo.viewmodels.VideoListViewModel
 import kotlinx.coroutines.launch
 
-class VideoListScreen(private val videos: List<MediaVideos>) : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun VideoListScreen(navController: NavHostController, folder: VideoListing) {
+    val viewModel: VideoListViewModel = hiltViewModel()
+    val videoList = viewModel.videos.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
 
-        val viewModel: VideoListViewModel = hiltViewModel()
-        val navigator = LocalNavigator.current
-        val videoList = viewModel.videos.collectAsStateWithLifecycle()
-        val scope = rememberCoroutineScope()
-
-        LaunchedEffect(key1 = true) {
-            viewModel.emitVideos(videos)
-            viewModel.setVideoList(videos)
-        }
-
-        val searchQuery = remember {
-            mutableStateOf("")
-        }
-
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(text = videos[0].folderName) },
-                    modifier = Modifier.shadow(
-                        elevation = 8.dp,
-                        ambientColor = Color.Blue,
-                        spotColor = Color.Blue
-                    ),
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = FloatingActionButtonDefaults.containerColor,
-                        titleContentColor = contentColorFor(FloatingActionButtonDefaults.containerColor)
-                    )
-                )
-            },
-        ) { paddingValues ->
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-            ) {
-                OutlinedTextField(value = searchQuery.value, onValueChange = {
-                    searchQuery.value = it
-                    scope.launch {
-                        viewModel.searchVideos(it)
-                    }
-                },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(10.dp),
-                    trailingIcon = {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = "")
-                    },
-                    placeholder = {
-                        Text(text = "Search Videos")
-                    }
-                )
-                Spacer(modifier = Modifier.padding(vertical = 10.dp))
-                LazyColumn {
-                    items(items = videoList.value, key = {
-                        it.id
-                    }) { video ->
-                        VideosItem(item = video) {
-                            viewModel.savePathInSaveStateHandel(it.path)
-                            navigator?.push(OfflineVideoPlayerScreen(it, videos))
-                        }
-                    }
-                }
-
-            }
-        }
+    LaunchedEffect(key1 = true) {
+        val videos = viewModel.gson.fromJson(folder.videos, Array<MediaVideos>::class.java).toList()
+        viewModel.emitVideos(videos)
+        viewModel.setVideoList(videos)
     }
 
-    @OptIn(ExperimentalGlideComposeApi::class)
-    @Composable
-    fun VideosItem(item: MediaVideos, onClick: (item: MediaVideos) -> Unit) {
+    val searchQuery = remember {
+        mutableStateOf("")
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = folder.name) },
+                modifier = Modifier.shadow(
+                    elevation = 8.dp,
+                    ambientColor = Color.Blue,
+                    spotColor = Color.Blue
+                ),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = FloatingActionButtonDefaults.containerColor,
+                    titleContentColor = contentColorFor(FloatingActionButtonDefaults.containerColor)
+                )
+            )
+        },
+    ) { paddingValues ->
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            OutlinedTextField(value = searchQuery.value, onValueChange = {
+                searchQuery.value = it
+                scope.launch {
+                    viewModel.searchVideos(it)
+                }
+            },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp),
+                trailingIcon = {
+                    Icon(imageVector = Icons.Default.Search, contentDescription = "")
+                },
+                placeholder = {
+                    Text(text = "Search Videos")
+                }
+            )
+            Spacer(modifier = Modifier.padding(vertical = 10.dp))
+            LazyColumn {
+                items(items = videoList.value, key = {
+                    it.id
+                }) { video ->
+                    VideosItem(item = video) {
+                        //viewModel.savePathInSaveStateHandel(it.path)
+                        //navigator?.push(OfflineVideoPlayerScreen(it, folder.files))
+
+                        val videoString = viewModel.gson.toJson(video).toString()
+
+                        navController.navigate(
+                            route = com.rkbapps.exoplayerdemo.navigation.OfflinePlayer(
+                                video = videoString,
+                                videoList = folder.videos
+                            )
+                        )
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun VideosItem(item: MediaVideos, onClick: (item: MediaVideos) -> Unit) {
 //        ElevatedCard(
 //            modifier = Modifier.padding(vertical = 4.dp),
 //            onClick = {onClick.invoke(item)}
 //        ) {
 
-        val location = remember(item.location) { item.location }
-        val duration = remember(item.duration){ Constants.convertTime(item.duration) }
-        val fileSize = remember(item.size) { Constants.formatSize(item.size) }
+    val location = remember(item.location) { item.location }
+    val duration = remember(item.duration) { Constants.convertTime(item.duration) }
+    val fileSize = remember(item.size) { Constants.formatSize(item.size) }
 
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                onClick.invoke(item)
-            }
-            .padding(vertical = 8.dp, horizontal = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .clickable {
+            onClick.invoke(item)
+        }
+        .padding(vertical = 8.dp, horizontal = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(height = 80.dp, width = 140.dp)
+                .clip(RoundedCornerShape(8.dp)),
         ) {
+            GlideImage(
+                model = item.path, contentDescription = "", modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+                loading = placeholder(R.drawable.video_placeholder),
+                failure = placeholder(R.drawable.video_placeholder)
+            )
+            if (location != StorageLocation.INTERNAL) {
+                Icon(
+                    painter = painterResource(id = R.drawable.sd_card),
+                    contentDescription = "sd card",
+                    modifier = Modifier
+                        .size(15.dp)
+                        .align(Alignment.TopEnd)
+                        .padding(top = 2.dp, end = 2.dp)
+                )
+            }
             Box(
                 modifier = Modifier
-                    .size(height = 80.dp, width = 140.dp)
-                    .clip(RoundedCornerShape(8.dp)),
+                    .padding(end = 2.dp, bottom = 2.dp)
+                    .background(
+                        color = Color.Black.copy(alpha = 0.7f),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(horizontal = 4.dp, vertical = 2.dp)
+                    .align(Alignment.BottomEnd), contentAlignment = Alignment.Center
             ) {
-                GlideImage(
-                    model = item.path, contentDescription = "", modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop,
-                    loading = placeholder(R.drawable.video_placeholder),
-                    failure = placeholder(R.drawable.video_placeholder)
-                )
-                if (location != StorageLocation.INTERNAL) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.sd_card),
-                        contentDescription = "sd card",
-                        modifier = Modifier.size(15.dp).align(Alignment.TopEnd).padding(top = 2.dp, end = 2.dp)
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .padding(end = 2.dp, bottom = 2.dp)
-                        .background(color = Color.Black.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))
-                        .padding(horizontal = 4.dp, vertical = 2.dp)
-                        .align(Alignment.BottomEnd), contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = duration,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = Color.White
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.width(10.dp))
-            Column {
                 Text(
-                    text = item.displayName,
-                    style = MaterialTheme.typography.titleSmall,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    text = fileSize,
+                    text = duration,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.labelMedium
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Color.White
                 )
             }
         }
-
+        Spacer(modifier = Modifier.width(10.dp))
+        Column {
+            Text(
+                text = item.displayName,
+                style = MaterialTheme.typography.titleSmall,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            Text(
+                text = fileSize,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
     }
 
-
-//    }
 }

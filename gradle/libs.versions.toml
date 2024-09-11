@@ -19,16 +19,16 @@ cronetOkhttp = "0.1.0"
 media3 = "1.4.1"
 multidex = "2.0.1"
 #navigation
-navigationCompose = "2.7.7"
+navigationCompose = "2.8.0"
 voyager = "1.1.0-beta02"
 hiltNavigationCompose = "1.2.0"
 
 ksp = "1.9.0-1.0.13"
 hilt = "2.51.1"
 
-lifecycleRuntimeComposeAndroid = "2.8.4"
+lifecycleRuntimeComposeAndroid = "2.8.5"
 #google fonts
-uiTextGoogleFonts = "1.6.8"
+uiTextGoogleFonts = "1.7.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
