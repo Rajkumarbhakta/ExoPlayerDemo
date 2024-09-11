@@ -42,7 +42,9 @@ fun OnlineVideoPlayerScreen(navController: NavHostController, videoUrl: VideoUrl
             exoPlayer = viewModel.player,
             videoTittle = videoUrl.url,
             videoTimer = videoTimer,
-        )
+        ){
+            navController.navigateUp()
+        }
     }
 
 }

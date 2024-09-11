@@ -34,8 +34,8 @@ fun PlayerControl(
     onPrevious: (() -> Unit)? = {},
     onNext: (() -> Unit)? = {},
     onResizeModeChanged: (Int) -> Unit,
+    onNavigateBack:()->Unit = {},
     onSeekChanged: (newValue: Float) -> Unit,
-
     ) {
 
     val context = LocalContext.current
@@ -70,7 +70,8 @@ fun PlayerControl(
                     .background(color = Color.Black.copy(alpha = 0.6f))
                     .align(Alignment.TopCenter)
                     .fillMaxWidth(),
-                title = videoTitle
+                title = videoTitle,
+                onNavigateBack = onNavigateBack
             )
 
             CenterController(

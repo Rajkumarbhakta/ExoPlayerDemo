@@ -26,14 +26,14 @@ data class VideoUrl(val url: String)
 data class OfflinePlayer(val video: String, val videoList: String)
 
 @Serializable
-data class VideoListing(val name:String, val videos:String)
+data class VideoListing(val name: String, val videos: String)
 
 
 @Composable
 fun NavGraphMain(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = Splash){
+    NavHost(navController = navController, startDestination = Splash) {
         composable<Splash> {
-            SplashScreen(navController = navController )
+            SplashScreen(navController = navController)
         }
         composable<Home> {
             HomeScreen(navController = navController)

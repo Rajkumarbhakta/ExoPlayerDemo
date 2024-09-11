@@ -30,7 +30,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun fetchVideos(){
+    fun fetchVideos() {
         viewModelScope.launch {
             repository.fetchMediaFolders()
         }

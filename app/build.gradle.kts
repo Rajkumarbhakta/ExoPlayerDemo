@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.hilt.android)
-    id ("kotlinx-serialization")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -99,11 +99,6 @@ dependencies {
     // multidex_version
     implementation(libs.androidx.multidex)
 
-    //voyager
-    implementation(libs.voyager.navigator)
-    implementation(libs.voyager.transitions)
-    implementation(libs.voyager.hilt)
-
     //navigation compose
     implementation (libs.androidx.navigation.compose)
 
@@ -120,7 +115,7 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
 
     //kotlinx serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1")
+    implementation(libs.kotlinx.serialization.json)
 
 
 }

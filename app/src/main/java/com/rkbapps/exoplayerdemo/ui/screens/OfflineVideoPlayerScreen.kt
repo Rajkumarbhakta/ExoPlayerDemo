@@ -58,6 +58,8 @@ fun OfflineVideoPlayerScreen(navController: NavHostController, offlineVideo: Off
             videoTimer = videoTimer,
             onPreviousClicked = { viewModel.playPreviousVideo() },
             onNextClicked = { viewModel.playNextVideo() },
-        )
+        ){
+            navController.navigateUp()
+        }
     }
 }

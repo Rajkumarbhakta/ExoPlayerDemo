@@ -15,23 +15,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.LocalNavigator
 import com.rkbapps.exoplayerdemo.R
 
 @Composable
-fun TopController(modifier: Modifier = Modifier, title: String) {
-    val navigator = LocalNavigator.current
+fun TopController(modifier: Modifier = Modifier, title: String,onNavigateBack:()->Unit) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = {
-            navigator?.let {
-                if (it.canPop) {
-                    it.pop()
-                }
-            }
+            onNavigateBack()
         }) {
             Icon(
                 painter = painterResource(id = R.drawable.arrow_left),

@@ -25,12 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.Player.STATE_ENDED
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import cafe.adriel.voyager.navigator.LocalNavigator
-import com.google.android.exoplayer2.Player.STATE_ENDED
 import com.rkbapps.exoplayerdemo.ui.composable.controls.PlayerControl
 import com.rkbapps.exoplayerdemo.util.Constants
 import kotlinx.coroutines.delay
@@ -45,6 +44,7 @@ fun VideoPlayer(
     videoTimer: MutableLongState,
     onPreviousClicked: (() -> Unit)? = null,
     onNextClicked: (() -> Unit)? = null,
+    navigateBack:()->Unit
 ) {
     val resizeMode = rememberSaveable { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_FIT) }
     var shouldShowControls by rememberSaveable { mutableStateOf(false) }
@@ -53,7 +53,6 @@ fun VideoPlayer(
     val totalDuration = remember { mutableLongStateOf(0L) }
     val bufferedPercentage = remember { mutableIntStateOf(0) }
 
-    val navigator = LocalNavigator.current
 
     val error = rememberSaveable { mutableStateOf<String?>(null) }
     val isErrorDialogVisible = rememberSaveable { mutableStateOf(false) }
@@ -136,11 +135,7 @@ fun VideoPlayer(
                 msg = error.value,
                 onDismiss = { /*TODO*/ }) {
                 isErrorDialogVisible.value = false
-                navigator?.let {
-                    if (navigator.canPop) {
-                        navigator.pop()
-                    }
-                }
+                navigateBack()
             }
         }
 
@@ -205,7 +200,8 @@ fun VideoPlayer(
             resizeMode = resizeMode.intValue,
             onResizeModeChanged = {
                 resizeMode.intValue = it
-            }
+            },
+            onNavigateBack = navigateBack,
         ) { position ->
             exoPlayer.seekTo(
                 position.toLong()
