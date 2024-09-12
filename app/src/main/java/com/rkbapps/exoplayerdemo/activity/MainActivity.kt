@@ -17,12 +17,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         MultiDex.install(this)
         setContent {
+            val navController = rememberNavController()
             ExoPlayerDemoTheme {
-//                Navigator(screen = HomeScreen()) {
-//                    SlideTransition(navigator = it)
-//                }
-                NavGraphMain(navController = rememberNavController())
-
+                NavGraphMain(navController = navController)
             }
         }
     }
