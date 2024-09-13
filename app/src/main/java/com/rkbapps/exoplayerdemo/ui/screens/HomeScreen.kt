@@ -23,8 +23,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
@@ -246,10 +248,23 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = hilt
 
                     if (folders.isNotEmpty() && !folderList.value.isLoading && folderList.value.error == null) {
                         if (folderList.value.folders.isNotEmpty()) {
-                            LazyColumn {
-                                items(items = folders,
-                                    key = { it.id }
-                                ) { videos ->
+//                            LazyColumn {
+//                                items(items = folders,
+//                                    key = { it.id }
+//                                ) { videos ->
+//                                    VideoFolderItem(item = videos) {
+//                                        val videoList = viewModel.gson.toJson(it.files).toString()
+//                                        navController.navigate(
+//                                            VideoListing(
+//                                                name = it.name,
+//                                                videos = videoList
+//                                            )
+//                                        )
+//                                    }
+//                                }
+//                            }
+                            Column(modifier = Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState())) {
+                                folders.forEach { videos ->
                                     VideoFolderItem(item = videos) {
                                         val videoList = viewModel.gson.toJson(it.files).toString()
                                         navController.navigate(

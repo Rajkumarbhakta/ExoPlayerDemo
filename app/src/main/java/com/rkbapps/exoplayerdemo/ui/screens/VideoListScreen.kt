@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -109,9 +111,7 @@ fun VideoListScreen(viewModel: VideoListViewModel = hiltViewModel(),navControlle
                     VideosItem(item = video) {
                         //viewModel.savePathInSaveStateHandel(it.path)
                         //navigator?.push(OfflineVideoPlayerScreen(it, folder.files))
-
                         val videoString = viewModel.gson.toJson(video).toString()
-
                         navController.navigate(
                             route = com.rkbapps.exoplayerdemo.navigation.OfflinePlayer(
                                 video = videoString,
@@ -121,7 +121,6 @@ fun VideoListScreen(viewModel: VideoListViewModel = hiltViewModel(),navControlle
                     }
                 }
             }
-
         }
     }
 }
