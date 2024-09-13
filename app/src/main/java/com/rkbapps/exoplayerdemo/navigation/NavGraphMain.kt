@@ -19,10 +19,10 @@ fun NavGraphMain(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = Splash,
-        enterTransition = { slideInHorizontally() },
-        exitTransition = { slideOutHorizontally() },
-        popExitTransition = { slideOutHorizontally() },
-        popEnterTransition = { slideInHorizontally() }
+        enterTransition = { slideInHorizontally(initialOffsetX = { it/2 }) },
+        exitTransition = { slideOutHorizontally(targetOffsetX = { it/2 }) },
+        popExitTransition = { slideOutHorizontally(targetOffsetX = { it/2 }) },
+        popEnterTransition = { slideInHorizontally(initialOffsetX = { it/2 }) }
     ) {
         composable<Splash> {
             SplashScreen(navController = navController)

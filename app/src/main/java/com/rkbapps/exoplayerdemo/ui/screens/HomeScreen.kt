@@ -77,12 +77,10 @@ import com.rkbapps.exoplayerdemo.viewmodels.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController) {
-    val viewModel: HomeViewModel = hiltViewModel()
+fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val folderList = viewModel.folderList.collectAsStateWithLifecycle()
-    val permissionLauncher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) {
+    val permissionLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) {
             if (it) {
                 Toast.makeText(context, "Permission granted.", Toast.LENGTH_SHORT).show()
                 viewModel.fetchVideos()
@@ -113,6 +111,10 @@ fun HomeScreen(navController: NavHostController) {
                 permissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
             }
         }
+    }
+
+    val folders = remember(folderList.value.folders) {
+        folderList.value.folders
     }
 
 
@@ -242,11 +244,10 @@ fun HomeScreen(navController: NavHostController) {
                         }
                     }
 
-                    if (folderList.value.folders.isNotEmpty() && !folderList.value.isLoading && folderList.value.error == null) {
+                    if (folders.isNotEmpty() && !folderList.value.isLoading && folderList.value.error == null) {
                         if (folderList.value.folders.isNotEmpty()) {
-                            val list = folderList.value.folders.toMutableStateList()
                             LazyColumn {
-                                items(items = list,
+                                items(items = folders,
                                     key = { it.id }
                                 ) { videos ->
                                     VideoFolderItem(item = videos) {

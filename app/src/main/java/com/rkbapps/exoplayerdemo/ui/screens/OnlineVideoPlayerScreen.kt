@@ -17,8 +17,8 @@ import com.rkbapps.exoplayerdemo.ui.theme.surfaceContainerDark
 import com.rkbapps.exoplayerdemo.viewmodels.OnlinePlayerViewModel
 
 @Composable
-fun OnlineVideoPlayerScreen(navController: NavHostController, videoUrl: VideoUrl) {
-    val viewModel: OnlinePlayerViewModel = hiltViewModel()
+fun OnlineVideoPlayerScreen(viewModel: OnlinePlayerViewModel = hiltViewModel(),navController: NavHostController, videoUrl: VideoUrl) {
+
     val videoTimer = rememberSaveable { viewModel.videoTimer }
 
     LaunchedEffect(Unit) {

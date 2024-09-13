@@ -19,15 +19,10 @@ import com.rkbapps.exoplayerdemo.ui.theme.surfaceContainerDark
 import com.rkbapps.exoplayerdemo.viewmodels.OfflineVideoPlayerViewModel
 
 @Composable
-fun OfflineVideoPlayerScreen(navController: NavHostController, offlineVideo: OfflinePlayer) {
-    val viewModel: OfflineVideoPlayerViewModel = hiltViewModel()
+fun OfflineVideoPlayerScreen(viewModel: OfflineVideoPlayerViewModel = hiltViewModel(),navController: NavHostController, offlineVideo: OfflinePlayer) {
     val videoTimer = rememberSaveable { viewModel.videoTimer }
-    val video = remember(offlineVideo.video) {
-        viewModel.gson.fromJson(offlineVideo.video, MediaVideos::class.java)
-    }
-    val videoList = remember(offlineVideo.videoList) {
-        viewModel.gson.fromJson(offlineVideo.videoList, Array<MediaVideos>::class.java)
-    }
+    val video = remember(offlineVideo.video) { viewModel.gson.fromJson(offlineVideo.video, MediaVideos::class.java) }
+    val videoList = remember(offlineVideo.videoList) { viewModel.gson.fromJson(offlineVideo.videoList, Array<MediaVideos>::class.java) }
 
     LaunchedEffect(Unit) {
         if (videoList.isEmpty()) {

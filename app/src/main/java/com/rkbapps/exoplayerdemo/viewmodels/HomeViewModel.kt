@@ -9,6 +9,7 @@ import com.rkbapps.exoplayerdemo.repository.MediaVideosUiState
 import com.rkbapps.exoplayerdemo.util.Constants
 import com.rkbapps.exoplayerdemo.util.SharedPerfManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,9 +24,9 @@ class HomeViewModel @Inject constructor(
 
     val folderList: StateFlow<MediaVideosUiState> = repository.folderList
 
-
     init {
         viewModelScope.launch {
+            delay(50)
             repository.fetchMediaFolders()
         }
     }

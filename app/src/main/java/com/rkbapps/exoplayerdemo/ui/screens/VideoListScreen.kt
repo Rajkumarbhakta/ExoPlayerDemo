@@ -57,20 +57,13 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VideoListScreen(navController: NavHostController, folder: VideoListing) {
-    val viewModel: VideoListViewModel = hiltViewModel()
-    val videoList = viewModel.videos.collectAsStateWithLifecycle()
+fun VideoListScreen(viewModel: VideoListViewModel = hiltViewModel(),navController: NavHostController, folder: VideoListing,) {
+    val videoList = remember(viewModel.videos) { viewModel.videos }.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(key1 = true) {
-        val videos = viewModel.gson.fromJson(folder.videos, Array<MediaVideos>::class.java).toList()
-        viewModel.emitVideos(videos)
-        viewModel.setVideoList(videos)
-    }
+    LaunchedEffect(key1 = true) { viewModel.emitVideos(folder.videos) }
 
-    val searchQuery = remember {
-        mutableStateOf("")
-    }
+    val searchQuery = remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -97,9 +90,7 @@ fun VideoListScreen(navController: NavHostController, folder: VideoListing) {
         ) {
             OutlinedTextField(value = searchQuery.value, onValueChange = {
                 searchQuery.value = it
-                scope.launch {
-                    viewModel.searchVideos(it)
-                }
+                scope.launch { viewModel.searchVideos(it) }
             },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(10.dp),
