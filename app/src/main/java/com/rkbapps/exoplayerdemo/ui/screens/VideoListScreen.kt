@@ -52,6 +52,7 @@ import com.bumptech.glide.integration.compose.placeholder
 import com.rkbapps.exoplayerdemo.R
 import com.rkbapps.exoplayerdemo.models.MediaVideos
 import com.rkbapps.exoplayerdemo.models.StorageLocation
+import com.rkbapps.exoplayerdemo.navigation.OfflinePlayer
 import com.rkbapps.exoplayerdemo.navigation.VideoListing
 import com.rkbapps.exoplayerdemo.util.Constants
 import com.rkbapps.exoplayerdemo.viewmodels.VideoListViewModel
@@ -62,8 +63,6 @@ import kotlinx.coroutines.launch
 fun VideoListScreen(viewModel: VideoListViewModel = hiltViewModel(),navController: NavHostController, folder: VideoListing,) {
     val videoList = remember(viewModel.videos) { viewModel.videos }.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
-
-    LaunchedEffect(key1 = true) { viewModel.emitVideos(folder.videos) }
 
     val searchQuery = remember { mutableStateOf("") }
 
@@ -83,7 +82,6 @@ fun VideoListScreen(viewModel: VideoListViewModel = hiltViewModel(),navControlle
             )
         },
     ) { paddingValues ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -109,15 +107,8 @@ fun VideoListScreen(viewModel: VideoListViewModel = hiltViewModel(),navControlle
                     it.id
                 }) { video ->
                     VideosItem(item = video) {
-                        //viewModel.savePathInSaveStateHandel(it.path)
-                        //navigator?.push(OfflineVideoPlayerScreen(it, folder.files))
                         val videoString = viewModel.gson.toJson(video).toString()
-                        navController.navigate(
-                            route = com.rkbapps.exoplayerdemo.navigation.OfflinePlayer(
-                                video = videoString,
-                                videoList = folder.videos
-                            )
-                        )
+                        navController.navigate(route = OfflinePlayer(video = videoString, videoList = folder.videos))
                     }
                 }
             }

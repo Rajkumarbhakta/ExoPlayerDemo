@@ -70,13 +70,6 @@ fun BottomControl(
     val orientationIcon = rememberSaveable {
         mutableIntStateOf(R.drawable.maximise)
     }
-    val resizeModes = remember {
-        mutableStateListOf(
-            AspectRatioFrameLayout.RESIZE_MODE_FIT,
-            AspectRatioFrameLayout.RESIZE_MODE_FILL,
-            AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-        )
-    }
 
     val currentResizeMode = rememberSaveable {
         mutableStateOf("Fit")

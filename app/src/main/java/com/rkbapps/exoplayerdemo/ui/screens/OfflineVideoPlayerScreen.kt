@@ -21,17 +21,9 @@ import com.rkbapps.exoplayerdemo.viewmodels.OfflineVideoPlayerViewModel
 @Composable
 fun OfflineVideoPlayerScreen(viewModel: OfflineVideoPlayerViewModel = hiltViewModel(),navController: NavHostController, offlineVideo: OfflinePlayer) {
     val videoTimer = rememberSaveable { viewModel.videoTimer }
-    val video = remember(offlineVideo.video) { viewModel.gson.fromJson(offlineVideo.video, MediaVideos::class.java) }
-    val videoList = remember(offlineVideo.videoList) { viewModel.gson.fromJson(offlineVideo.videoList, Array<MediaVideos>::class.java) }
+    val videoTittle = remember { viewModel.videoTittle }
 
-    LaunchedEffect(Unit) {
-        if (videoList.isEmpty()) {
-            viewModel.playOfflineVideo(video.path, video.title)
-        } else {
-            viewModel.prepareAndPlayPlaylist(videoList.toList(), video)
-        }
-        viewModel.saveLastPlayedVideo(video)
-    }
+
 
     DisposableEffect(Unit) {
         onDispose {
@@ -49,7 +41,7 @@ fun OfflineVideoPlayerScreen(viewModel: OfflineVideoPlayerViewModel = hiltViewMo
                 .fillMaxSize()
                 .padding(paddingValues),
             exoPlayer = viewModel.player,
-            videoTittle = "${viewModel.player.currentMediaItem?.mediaMetadata?.title ?: video.title}",
+            videoTittle = videoTittle.value,
             videoTimer = videoTimer,
             onPreviousClicked = { viewModel.playPreviousVideo() },
             onNextClicked = { viewModel.playNextVideo() },

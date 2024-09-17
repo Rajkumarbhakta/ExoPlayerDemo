@@ -3,14 +3,18 @@ package com.rkbapps.exoplayerdemo.viewmodels
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.net.Uri
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.navigation.toRoute
 import com.google.gson.Gson
 import com.rkbapps.exoplayerdemo.models.MediaVideos
+import com.rkbapps.exoplayerdemo.navigation.OfflinePlayer
 import com.rkbapps.exoplayerdemo.util.Constants
 import com.rkbapps.exoplayerdemo.util.SharedPerfManager
 import com.rkbapps.exoplayerdemo.util.findActivity
@@ -35,15 +39,33 @@ class OfflineVideoPlayerViewModel @Inject constructor(
     val videoTimer = mutableLongStateOf(0L)
     private var videos: List<MediaVideos> = emptyList()
 
+    private val _videoTittle = mutableStateOf("")
+    val videoTittle:State<String> = _videoTittle
+
+
     init {
         player.prepare()
-        val path = savedStateHandle.get<String>(Constants.PATH)
+
+        val offlineVideo = savedStateHandle.toRoute<OfflinePlayer>()
+        val video = gson.fromJson(offlineVideo.video, MediaVideos::class.java)
+        val videoList = gson.fromJson(offlineVideo.videoList, Array<MediaVideos>::class.java)
+
+        _videoTittle.value = video.title
+
         val currentPosition = savedStateHandle.get<Long>(CURRENT_POSITION_KEY) ?: 0L
         val currentVideoIndex = savedStateHandle.get<Int>(CURRENT_VIDEO_INDEX_KEY) ?: 0
-
         if (currentVideoIndex >= 0) {
             player.seekTo(currentVideoIndex, currentPosition)
         }
+
+        saveLastPlayedVideo(video)
+
+        if (videoList.isEmpty()) {
+           playOfflineVideo(video.path, video.title)
+        } else {
+            prepareAndPlayPlaylist(videoList.toList(), video)
+        }
+
     }
 
     fun playOfflineVideo(path: String, title: String) {
@@ -67,11 +89,7 @@ class OfflineVideoPlayerViewModel @Inject constructor(
         videos.map {
             MediaItem.Builder()
                 .setUri(Uri.parse(it.path))
-                .setMediaMetadata(
-                    MediaMetadata.Builder()
-                        .setTitle(it.title)
-                        .build()
-                )
+                .setMediaMetadata(MediaMetadata.Builder().setTitle(it.title).build())
                 .build()
         }.also { mediaItems ->
             player.setMediaItems(mediaItems, startIndex, videoTimer.longValue)
@@ -88,6 +106,9 @@ class OfflineVideoPlayerViewModel @Inject constructor(
     fun playNextVideo() {
         if (player.hasNextMediaItem()) {
             player.seekToNext()
+            player.currentMediaItem?.mediaMetadata?.title?.let {
+                _videoTittle.value = it.toString()
+            }
         } else {
             player.seekTo(0, 0L)
         }
@@ -96,6 +117,9 @@ class OfflineVideoPlayerViewModel @Inject constructor(
     fun playPreviousVideo() {
         if (player.hasPreviousMediaItem()) {
             player.seekToPrevious()
+            player.currentMediaItem?.mediaMetadata?.title?.let {
+                _videoTittle.value = it.toString()
+            }
         } else {
             player.seekTo(videos.size - 1, 0L)
         }
