@@ -3,7 +3,7 @@ package com.rkbapps.exoplayerdemo.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.rkbapps.exoplayerdemo.models.MediaVideos
+import com.rkbapps.exoplayerdemo.models.Videos
 import com.rkbapps.exoplayerdemo.repository.HomeRepository
 import com.rkbapps.exoplayerdemo.repository.MediaVideosUiState
 import com.rkbapps.exoplayerdemo.util.Constants
@@ -37,11 +37,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun readLastPlayedVideo(): MediaVideos? {
+    fun readLastPlayedVideo(): Videos? {
         return try {
             val data = sharedPerfManager.readString(Constants.LAST_PLAYED_VIDEO)
             data?.let {
-                val video = gson.fromJson(it, MediaVideos::class.java)
+                val video = gson.fromJson(it, Videos::class.java)
                 video
             }
         } catch (e: Exception) {

@@ -14,9 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,7 +28,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,7 +47,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.rkbapps.exoplayerdemo.R
-import com.rkbapps.exoplayerdemo.models.MediaVideos
+import com.rkbapps.exoplayerdemo.models.Videos
 import com.rkbapps.exoplayerdemo.models.StorageLocation
 import com.rkbapps.exoplayerdemo.navigation.OfflinePlayer
 import com.rkbapps.exoplayerdemo.navigation.VideoListing
@@ -119,7 +116,7 @@ fun VideoListScreen(viewModel: VideoListViewModel = hiltViewModel(),navControlle
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun VideosItem(item: MediaVideos, onClick: (item: MediaVideos) -> Unit) {
+fun VideosItem(item: Videos, onClick: (item: Videos) -> Unit) {
 //        ElevatedCard(
 //            modifier = Modifier.padding(vertical = 4.dp),
 //            onClick = {onClick.invoke(item)}

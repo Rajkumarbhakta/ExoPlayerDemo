@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.google.gson.Gson
-import com.rkbapps.exoplayerdemo.models.MediaVideos
+import com.rkbapps.exoplayerdemo.models.Videos
 import com.rkbapps.exoplayerdemo.navigation.VideoListing
 import com.rkbapps.exoplayerdemo.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,10 +21,10 @@ class VideoListViewModel @Inject constructor(
     val gson: Gson
 ) : ViewModel() {
 
-    private val _videos = MutableStateFlow<List<MediaVideos>>(emptyList())
-    val videos: StateFlow<List<MediaVideos>> = _videos
+    private val _videos = MutableStateFlow<List<Videos>>(emptyList())
+    val videos: StateFlow<List<Videos>> = _videos
 
-    private var videoList: List<MediaVideos> = emptyList()
+    private var videoList: List<Videos> = emptyList()
 
 
     init {
@@ -44,14 +44,14 @@ class VideoListViewModel @Inject constructor(
     }
 
 
-    private fun setVideoList(videos: List<MediaVideos>) {
+    private fun setVideoList(videos: List<Videos>) {
         videoList = videos
     }
 
     private suspend fun emitVideos() {
         try {
             val videos = savedStateHandle.toRoute<VideoListing>()
-            val actualVideoList = gson.fromJson(videos.videos, Array<MediaVideos>::class.java).toList()
+            val actualVideoList = gson.fromJson(videos.videos, Array<Videos>::class.java).toList()
             delay(50)
             _videos.emit(actualVideoList)
             setVideoList(actualVideoList)

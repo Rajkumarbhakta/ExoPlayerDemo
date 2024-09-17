@@ -13,7 +13,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.toRoute
 import com.google.gson.Gson
-import com.rkbapps.exoplayerdemo.models.MediaVideos
+import com.rkbapps.exoplayerdemo.models.Videos
 import com.rkbapps.exoplayerdemo.navigation.OfflinePlayer
 import com.rkbapps.exoplayerdemo.util.Constants
 import com.rkbapps.exoplayerdemo.util.SharedPerfManager
@@ -37,7 +37,7 @@ class OfflineVideoPlayerViewModel @Inject constructor(
     }
 
     val videoTimer = mutableLongStateOf(0L)
-    private var videos: List<MediaVideos> = emptyList()
+    private var videos: List<Videos> = emptyList()
 
     private val _videoTittle = mutableStateOf("")
     val videoTittle:State<String> = _videoTittle
@@ -47,8 +47,8 @@ class OfflineVideoPlayerViewModel @Inject constructor(
         player.prepare()
 
         val offlineVideo = savedStateHandle.toRoute<OfflinePlayer>()
-        val video = gson.fromJson(offlineVideo.video, MediaVideos::class.java)
-        val videoList = gson.fromJson(offlineVideo.videoList, Array<MediaVideos>::class.java)
+        val video = gson.fromJson(offlineVideo.video, Videos::class.java)
+        val videoList = gson.fromJson(offlineVideo.videoList, Array<Videos>::class.java)
 
         _videoTittle.value = video.title
 
@@ -68,7 +68,7 @@ class OfflineVideoPlayerViewModel @Inject constructor(
 
     }
 
-    fun playOfflineVideo(path: String, title: String) {
+    private fun playOfflineVideo(path: String, title: String) {
         val uri = Uri.parse(path)
         val mediaItem = MediaItem.Builder().setUri(uri)
             .setMediaMetadata(MediaMetadata.Builder().setTitle(title).build()).build()
@@ -77,12 +77,12 @@ class OfflineVideoPlayerViewModel @Inject constructor(
     }
 
 
-    fun saveLastPlayedVideo(video: MediaVideos) {
+    private fun saveLastPlayedVideo(video: Videos) {
         val lastPlayedVideo = gson.toJson(video)
         sharedPerfManager.writeString(Constants.LAST_PLAYED_VIDEO, lastPlayedVideo)
     }
 
-    fun prepareAndPlayPlaylist(videos: List<MediaVideos>, video: MediaVideos) {
+    private fun prepareAndPlayPlaylist(videos: List<Videos>, video: Videos) {
         val startIndex = videos.indexOfFirst { it.path == video.path }
         if (startIndex == -1) return
         this.videos = videos

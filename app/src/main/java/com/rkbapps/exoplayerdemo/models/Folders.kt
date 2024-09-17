@@ -8,7 +8,7 @@ data class Folders(
     val id: String = Constants.generateUniqueKey(),
     val name: String,
     val location: String,
-    val files: MutableList<MediaVideos> = mutableListOf()
+    val files: MutableList<Videos> = mutableListOf()
 ) : Serializable
 
 

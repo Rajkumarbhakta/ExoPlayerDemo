@@ -7,7 +7,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import com.rkbapps.exoplayerdemo.models.Folders
-import com.rkbapps.exoplayerdemo.models.MediaVideos
+import com.rkbapps.exoplayerdemo.models.Videos
 import com.rkbapps.exoplayerdemo.models.StorageLocation
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -91,7 +91,7 @@ class HomeRepository @Inject constructor(
                         Log.d("VIDEOS", "Folder Name : $folderName")
                         if (folder != null) {
                             folder.files.add(
-                                MediaVideos(
+                                Videos(
                                     id = id, title = title, displayName = displayName,
                                     size = size, duration = duration, path = path, date = date,
                                     folderName = folderName, format = format, location = location
@@ -102,7 +102,7 @@ class HomeRepository @Inject constructor(
                                 Folders(
                                     name = folderName,
                                     files = mutableListOf(
-                                        MediaVideos(
+                                        Videos(
                                             id = id,
                                             title = title,
                                             displayName = displayName,

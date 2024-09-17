@@ -23,10 +23,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
@@ -52,7 +50,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -70,7 +67,7 @@ import coil.compose.AsyncImage
 import com.rkbapps.exoplayerdemo.BuildConfig
 import com.rkbapps.exoplayerdemo.R
 import com.rkbapps.exoplayerdemo.models.Folders
-import com.rkbapps.exoplayerdemo.models.MediaVideos
+import com.rkbapps.exoplayerdemo.models.Videos
 import com.rkbapps.exoplayerdemo.models.StorageLocation
 import com.rkbapps.exoplayerdemo.navigation.OfflinePlayer
 import com.rkbapps.exoplayerdemo.navigation.VideoListing
@@ -161,7 +158,7 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = hilt
                         isUrlDialogOpen.value = false
                         val videoString = viewModel.gson.toJson(video).toString()
                         val videoListString =
-                            viewModel.gson.toJson(mutableListOf<MediaVideos>()).toString()
+                            viewModel.gson.toJson(mutableListOf<Videos>()).toString()
 
                         navController.navigate(
                             route = OfflinePlayer(
